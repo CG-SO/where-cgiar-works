@@ -1,0 +1,679 @@
+/* =================================================================
+   CGIAR DESIGN SYSTEM — local token layer
+   Transcribed from cgiar_design.md, matching the layer already used by
+   the project's map.html. When this module is embedded in the real site,
+   delete everything down to "COMPONENTS" and link ui.min.css +
+   props-cgiar.css instead; every token and class name below matches.
+================================================================= */
+
+/* Root font size 62.5% → 1rem = 10px */
+html { font-size: 62.5%; }
+
+/* ---------- 1. PRIMITIVES ---------- */
+
+:root {
+  --color-solid-grey-0:  #fff;    --color-solid-grey-10: #fafafa;
+  --color-solid-grey-20: #f5f5f5; --color-solid-grey-30: #ececec;
+  --color-solid-grey-40: #d9d9d9; --color-solid-grey-50: #cdcdcd;
+  --color-solid-grey-60: #a8a8a8; --color-solid-grey-70: #747474;
+  --color-solid-grey-80: #393939; --color-solid-grey-90: #1e1d1d;
+  --color-solid-grey-99: #080808; --color-solid-grey-100:#000;
+
+  --color-non-brand-placeholder: #e2eef1;
+  --color-opacity-disabled: .6;
+
+  --typography-font-families-font-1: "Noto Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --typography-font-families-font-2: "Noto Serif", Georgia, "Times New Roman", serif;
+
+  --s1: .4rem; --s2: .8rem; --s3: 1.2rem; --s4: 1.6rem; --s5: 2rem;
+  --s6: 2.4rem; --s7: 3.2rem; --s8: 4.8rem; --s9: 6.4rem; --s10: 9.6rem;
+
+  --border-width-thin: .1rem; --border-width-medium: .2rem; --border-width-thick: .4rem;
+}
+@media (min-width: 768px) {
+  :root { --s7: 4rem; --s8: 5.6rem; --s9: 7.2rem; --s10: 11.2rem; }
+}
+@media (min-width: 1024px) {
+  :root { --s5: 2.4rem; --s6: 3.2rem; --s7: 4.8rem; --s8: 6.4rem; --s9: 9.6rem; --s10: 12.8rem; }
+}
+
+[data-theme="cgiar"] {
+  --color-brand-5:#e6fff9; --color-brand-10:#9dffe8; --color-brand-20:#58fbd4;
+  --color-brand-30:#18f2be; --color-brand-40:#08d9a8; --color-brand-50:#00b389;
+  --color-brand-60:#008c6b; --color-brand-70:#06604b; --color-brand-80:#033529;
+  --color-brand-90:#02221a; --color-brand-99:#010d0a;
+  --color-dim-base: 8, 217, 168;
+  --color-focus: #3c00ff;
+  --dimension-border-radius-button: .8rem;
+  --dimension-border-radius-button-s: .6rem;
+  --dimension-border-radius-button-xs: .4rem;
+  --dimension-border-radius-card: .8rem;
+  --dimension-border-radius-component: .8rem;
+  --dimension-border-radius-image: 0;
+  --dimension-border-radius-module: 0;
+}
+
+/* ---------- 2. SEMANTIC TOKENS ---------- */
+
+[data-area="light"] {
+  --color-background-solid-neutral-strong:  var(--color-solid-grey-0);
+  --color-background-solid-neutral-default: var(--color-solid-grey-10);
+  --color-background-solid-neutral-subtle:  var(--color-solid-grey-20);
+  --color-background-solid-neutral-hover:   var(--color-solid-grey-30);
+  --color-background-solid-invert-default:  var(--color-brand-80);
+  --color-background-solid-invert-strong:   var(--color-brand-90);
+  --color-background-dim-neutral-default:   rgba(0,0,0,.10);
+  --color-background-dim-neutral-hover:     rgba(0,0,0,.15);
+  --color-foreground-emphasis:              var(--color-solid-grey-99);
+  --color-foreground-default:               var(--color-solid-grey-80);
+  --color-foreground-subtle:                var(--color-solid-grey-70);
+  --color-foreground-solid-accent-default:  var(--color-brand-60);
+  --color-foreground-solid-accent-strong:   var(--color-brand-70);
+  --color-foreground-solid-accent-subtle:   var(--color-brand-40);
+  --color-foreground-invert:                var(--color-solid-grey-0);
+  --color-border-default:                   rgba(0,0,0,.10);
+
+  /* map surfaces — same pattern map.html uses, extended with the
+     choropleth ramp so no tier colour is ever a literal in JS */
+  --color-map-water:  var(--color-non-brand-placeholder);
+  --color-map-land:   var(--color-solid-grey-0);
+  --color-map-coast:  var(--color-solid-grey-40);
+  --color-map-tier-1: var(--color-brand-20);
+  --color-map-tier-2: var(--color-brand-40);
+  --color-map-tier-3: var(--color-brand-60);
+
+  --color-button-primary-fg: var(--color-brand-20);
+  --color-accent-soft: var(--color-brand-5);
+}
+
+/* Dark surfaces re-point the same tokens; nothing below needs a variant. */
+[data-area="dark"] {
+  --color-background-solid-neutral-strong:  var(--color-brand-90);
+  --color-background-solid-neutral-default: var(--color-brand-80);
+  --color-background-solid-neutral-subtle:  var(--color-brand-70);
+  --color-background-solid-neutral-hover:   var(--color-brand-60);
+  --color-background-solid-invert-default:  var(--color-solid-grey-10);
+  --color-background-solid-invert-strong:   var(--color-solid-grey-0);
+  --color-background-dim-neutral-default:   rgba(255,255,255,.15);
+  --color-background-dim-neutral-hover:     rgba(255,255,255,.20);
+  --color-foreground-emphasis:              var(--color-solid-grey-0);
+  --color-foreground-default:               var(--color-solid-grey-10);
+  --color-foreground-subtle:                var(--color-solid-grey-30);
+  --color-foreground-solid-accent-default:  var(--color-brand-20);
+  --color-foreground-solid-accent-strong:   var(--color-brand-10);
+  --color-foreground-invert:                var(--color-solid-grey-99);
+  --color-border-default:                   rgba(255,255,255,.15);
+
+  --color-map-water:  var(--color-brand-99);
+  --color-map-land:   var(--color-brand-80);
+  --color-map-coast:  var(--color-brand-70);
+  --color-map-tier-1: var(--color-brand-70);
+  --color-map-tier-2: var(--color-brand-50);
+  --color-map-tier-3: var(--color-brand-30);
+
+  --color-button-primary-fg: var(--color-brand-80);
+  --color-accent-soft: var(--color-brand-80);
+}
+
+/* ---------- 3. TYPOGRAPHY HELPERS ---------- */
+
+.h-typo-headline-l  { font-family: var(--typography-font-families-font-1); font-weight: 300; font-size: 3.2rem; line-height: 1.3; letter-spacing: 0; }
+.h-typo-headline-m  { font-family: var(--typography-font-families-font-1); font-weight: 400; font-size: 2.4rem; line-height: 1.3; }
+.h-typo-headline-s  { font-family: var(--typography-font-families-font-1); font-weight: 700; font-size: 2rem;   line-height: 1.3; }
+.h-typo-headline-xs { font-family: var(--typography-font-families-font-2); font-weight: 400; font-size: 1.8rem; line-height: 1.3; }
+.h-typo-copy-l      { font-family: var(--typography-font-families-font-1); font-weight: 400; font-size: 1.6rem; line-height: 1.5; }
+.h-typo-copy-m      { font-family: var(--typography-font-families-font-1); font-weight: 400; font-size: 1.4rem; line-height: 1.5; }
+.h-typo-copy-m-2    { font-family: var(--typography-font-families-font-1); font-weight: 700; font-size: 1.4rem; line-height: 1.5; }
+.h-typo-copy-s      { font-family: var(--typography-font-families-font-1); font-weight: 400; font-size: 1.2rem; line-height: 1.3; }
+.h-typo-copy-s-2    { font-family: var(--typography-font-families-font-1); font-weight: 700; font-size: 1.2rem; line-height: 1.3; }
+.h-typo-caption     { font-family: var(--typography-font-families-font-1); font-weight: 400; font-size: 1rem;   line-height: 1.2; }
+.h-typo-link        { font-family: var(--typography-font-families-font-1); font-weight: 600; font-size: 1.6rem; line-height: 1.2; }
+.h-typo-link-s      { font-family: var(--typography-font-families-font-1); font-weight: 600; font-size: 1.4rem; line-height: 1;   letter-spacing: -.1rem; }
+.h-typo-tag         { font-family: var(--typography-font-families-font-1); font-weight: 600; font-size: 1.2rem; line-height: 1.3; letter-spacing: .1rem; }
+
+@media (min-width: 768px) {
+  .h-typo-headline-l { font-size: 3.6rem; } .h-typo-headline-m { font-size: 2.8rem; }
+  .h-typo-headline-s { font-size: 2.4rem; } .h-typo-headline-xs{ font-size: 2rem; }
+  .h-typo-copy-l { font-size: 1.8rem; } .h-typo-copy-m { font-size: 1.6rem; }
+  .h-typo-copy-s { font-size: 1.4rem; } .h-typo-copy-s-2 { font-size: 1.4rem; }
+  .h-typo-caption { font-size: 1.2rem; }
+}
+@media (min-width: 1024px) {
+  .h-typo-headline-l { font-size: 4rem; } .h-typo-headline-m { font-size: 3.2rem; }
+  .h-typo-headline-s { font-size: 2.8rem; } .h-typo-headline-xs{ font-size: 2.2rem; }
+  .h-typo-copy-l { font-size: 2rem; } .h-typo-copy-m { font-size: 1.8rem; }
+  .h-typo-copy-s { font-size: 1.6rem; } .h-typo-copy-s-2 { font-size: 1.6rem; }
+}
+
+/* Spacer helpers */
+.h-s1 { height: var(--s1); } .h-s2 { height: var(--s2); } .h-s3 { height: var(--s3); }
+.h-s4 { height: var(--s4); } .h-s5 { height: var(--s5); } .h-s6 { height: var(--s6); }
+.h-s7 { height: var(--s7); }
+
+.h-sprite { display: none; }
+
+.h-visually-hidden {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* =================================================================
+   COMPONENTS
+================================================================= */
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  color: var(--color-foreground-default);
+  background: var(--color-background-solid-neutral-strong);
+  font-family: var(--typography-font-families-font-1);
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible { outline: var(--border-width-medium) solid var(--color-focus); outline-offset: .2rem; }
+
+.container { padding-inline: var(--s5); max-width: min(96vw, 1920px); margin-inline: auto; }
+
+/* ---- a-icon ---- */
+.a-icon { width: 1em; height: 1em; display: block; fill: currentColor; flex: none; }
+
+/* ---- a-button ---- */
+.a-button {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--s2);
+  border: var(--border-width-thin) solid transparent;
+  border-radius: var(--dimension-border-radius-button);
+  padding: var(--s3) var(--s5);
+  cursor: pointer; text-decoration: none;
+  font-family: inherit;
+  transition: background-color .18s, color .18s, border-color .18s;
+}
+.a-button--size-big   { padding: var(--s3) var(--s5); }
+.a-button--size-small { padding: var(--s2) var(--s4); border-radius: var(--dimension-border-radius-button-s); }
+.a-button__icon { display: flex; }
+
+.a-button--primary {
+  background: var(--color-background-solid-invert-default);
+  border-color: var(--color-background-solid-invert-default);
+  color: var(--color-button-primary-fg);
+}
+.a-button--primary:hover {
+  background: var(--color-background-solid-invert-strong);
+  border-color: var(--color-background-solid-invert-strong);
+}
+.a-button--secondary {
+  background: transparent;
+  border-color: var(--color-foreground-solid-accent-default);
+  color: var(--color-foreground-solid-accent-default);
+}
+.a-button--secondary:hover { background: var(--color-background-dim-neutral-default); }
+
+.a-button--tertiary {
+  background: var(--color-background-solid-neutral-strong);
+  border-color: var(--color-border-default);
+  color: var(--color-foreground-emphasis);
+}
+.a-button--tertiary:hover { background: var(--color-background-solid-neutral-subtle); }
+
+/* ---- a-link ---- */
+.a-link {
+  display: inline-flex; align-items: center; gap: var(--s2);
+  color: var(--color-foreground-solid-accent-default);
+  text-decoration: none;
+}
+.a-link__text { text-decoration: underline; text-underline-offset: .3rem; }
+.a-link:hover { color: var(--color-foreground-solid-accent-strong); }
+
+/* ---- a-tag ---- */
+.a-tag {
+  display: inline-block; text-transform: uppercase;
+  color: var(--color-foreground-solid-accent-strong);
+  background: var(--color-background-dim-neutral-default);
+  border-radius: var(--dimension-border-radius-button-s);
+  padding: var(--s1) var(--s3);
+}
+.a-tag:empty { display: none; }
+
+/* ---- m-search-field ---- */
+.m-search-field { position: relative; }
+.m-search-field__input {
+  width: 100%;
+  padding: var(--s3) var(--s7) var(--s3) var(--s7);
+  color: var(--color-foreground-emphasis);
+  background: var(--color-background-solid-neutral-strong);
+  border: var(--border-width-thin) solid var(--color-border-default);
+  border-radius: var(--dimension-border-radius-component);
+  appearance: none;
+}
+.m-search-field__input::-webkit-search-decoration,
+.m-search-field__input::-webkit-search-cancel-button { appearance: none; }
+.m-search-field__input::placeholder { color: var(--color-foreground-subtle); }
+.m-search-field__input:focus {
+  outline: var(--border-width-medium) solid var(--color-focus);
+  outline-offset: .2rem;
+  border-color: transparent;
+}
+.m-search-field__btn {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  display: grid; place-items: center;
+  width: 2.8rem; height: 2.8rem; font-size: 1.8rem;
+  border: 0; background: transparent; cursor: pointer;
+  color: var(--color-foreground-subtle);
+  border-radius: var(--dimension-border-radius-button-s);
+}
+.m-search-field__btn--static { left: var(--s3); pointer-events: none; }
+.m-search-field__btn--search { right: var(--s3); }
+.m-search-field__btn--search:hover {
+  color: var(--color-foreground-emphasis);
+  background: var(--color-background-dim-neutral-default);
+}
+.m-search-field__btn[hidden] { display: none; }
+
+/* ---- cms-search-filter: mutually exclusive region facets ----
+   Five long region names will not sit on one row, and wrapped pills read as
+   an accident. A facet list gives each region its full name and its count. */
+.cms-search-filter {
+  display: flex; flex-direction: column;
+  border-top: var(--border-width-thin) solid var(--color-border-default);
+}
+.cms-search-filter-link {
+  display: flex; align-items: baseline; justify-content: space-between; gap: var(--s3);
+  width: 100%; padding: var(--s2) var(--s1);
+  font-family: inherit; text-align: left; cursor: pointer;
+  color: var(--color-foreground-default);
+  background: transparent;
+  border: 0;
+  border-bottom: var(--border-width-thin) solid var(--color-border-default);
+  transition: color .14s, background-color .14s;
+}
+.cms-search-filter-link:hover {
+  color: var(--color-foreground-emphasis);
+  background: var(--color-background-solid-neutral-subtle);
+}
+.cms-search-filter-link[aria-pressed="true"] {
+  color: var(--color-foreground-solid-accent-strong);
+}
+.cms-search-filter-link__label { display: flex; align-items: center; gap: var(--s2); }
+.cms-search-filter-link__mark {
+  width: 1.4rem; height: 1.4rem; font-size: 1.4rem; flex: none;
+  color: var(--color-foreground-solid-accent-default);
+  opacity: 0;
+}
+.cms-search-filter-link[aria-pressed="true"] .cms-search-filter-link__mark { opacity: 1; }
+.cms-search-filter-link__count {
+  flex: none;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-foreground-subtle);
+}
+.cms-search-filter-link[aria-pressed="true"] .cms-search-filter-link__count,
+.cms-search-filter-link:hover .cms-search-filter-link__count {
+  color: inherit;
+}
+.cms-search-filter-link--empty { opacity: var(--color-opacity-disabled); }
+
+/* ---- browser surfaces ----
+   Selection, caret, scrollbars and numerals ship with browser defaults that
+   belong to no design system. Theme them from the palette. */
+::selection {
+  background: var(--color-foreground-solid-accent-default);
+  color: var(--color-foreground-invert);
+}
+
+.m-search-field__input { caret-color: var(--color-foreground-solid-accent-default); }
+
+.cms-map__list,
+.m-embed__code {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-solid-grey-40) transparent;
+}
+.cms-map__list::-webkit-scrollbar,
+.m-embed__code::-webkit-scrollbar { width: 8px; height: 8px; }
+.cms-map__list::-webkit-scrollbar-track,
+.m-embed__code::-webkit-scrollbar-track { background: transparent; }
+.cms-map__list::-webkit-scrollbar-thumb,
+.m-embed__code::-webkit-scrollbar-thumb {
+  background: var(--color-solid-grey-40);
+  border-radius: 999px;
+}
+.cms-map__list::-webkit-scrollbar-thumb:hover,
+.m-embed__code::-webkit-scrollbar-thumb:hover { background: var(--color-solid-grey-60); }
+
+/* Counts and coordinates line up only with tabular figures. */
+.cms-map__count,
+.cms-map__region,
+.cms-search-filter-link__count { font-variant-numeric: tabular-nums; }
+
+/* =================================================================
+   cms-map — the map module
+================================================================= */
+
+.cms-map { padding-block: var(--s6) var(--s7); }
+
+.cms-map__header { margin-bottom: 0; }
+.cms-map__title { margin: var(--s2) 0 var(--s2); color: var(--color-foreground-emphasis); }
+.cms-map__lead  { margin: 0; color: var(--color-foreground-subtle); max-width: 62ch; }
+
+.cms-map__layout {
+  display: grid;
+  grid-template-columns: 1fr 38rem;
+  gap: var(--s5);
+  align-items: stretch;
+  height: min(78vh, 82rem);
+  min-height: 52rem;
+}
+
+/* Map viewport */
+.cms-map__canvas {
+  position: relative; overflow: hidden; min-height: 0;
+  border: var(--border-width-thin) solid var(--color-border-default);
+  border-radius: var(--dimension-border-radius-card);
+  background: var(--color-map-water);
+}
+#map { position: absolute; inset: 0; z-index: 1; background: var(--color-map-water); outline: none; }
+
+/* toolbar */
+.cms-map__toolbar {
+  position: absolute; top: var(--s4); left: var(--s4); right: var(--s4); z-index: 500;
+  display: flex; justify-content: space-between; align-items: center; gap: var(--s3);
+  pointer-events: none;
+}
+.cms-map__toolbar > * { pointer-events: auto; }
+.cms-map__toolbar-group { display: flex; align-items: center; gap: var(--s2); flex-wrap: wrap; }
+.cms-map__region {
+  background: var(--color-background-solid-neutral-strong);
+  border: var(--border-width-thin) solid var(--color-border-default);
+  border-radius: var(--dimension-border-radius-button-s);
+  color: var(--color-foreground-emphasis);
+  padding: var(--s2) var(--s3);
+  text-transform: uppercase;
+}
+
+/* ---- countries: fill comes from CSS, never from JS ---- */
+.cms-map__country { transition: fill .15s; stroke: var(--color-map-coast); }
+.cms-map__country--t0 { fill: var(--color-map-land); }
+.cms-map__country--t1 { fill: var(--color-map-tier-1); }
+.cms-map__country--t2 { fill: var(--color-map-tier-2); }
+.cms-map__country--t3 { fill: var(--color-map-tier-3); }
+.cms-map__country:not(.cms-map__country--t0):hover { fill: var(--color-foreground-solid-accent-strong); }
+
+/* ---- m-pin ---- */
+.m-pin {
+  border-radius: 50%;
+  background: var(--color-foreground-solid-accent-default);
+  border: .3rem solid var(--color-background-solid-neutral-strong);
+  cursor: pointer;
+  transition: transform .16s, background-color .16s;
+}
+.m-pin--sm { width: 1.6rem; height: 1.6rem; border-width: .2rem; }
+.m-pin--system { background: var(--color-background-solid-invert-default); }
+
+/* Leaflet sizes the icon box; the dot centres inside it */
+.m-pin--marker { width: 1.8rem !important; height: 1.8rem !important; }
+.m-pin--marker:hover, .m-pin--marker.state-m-pin--active { transform: scale(1.25); }
+.m-pin--marker.state-m-pin--active { background: var(--color-foreground-solid-accent-strong); }
+
+/* ---- m-legend ---- */
+.m-legend {
+  position: absolute; left: var(--s4); bottom: var(--s4); z-index: 500;
+  min-width: 20rem; padding: var(--s3);
+  background: var(--color-background-solid-neutral-strong);
+  border: var(--border-width-thin) solid var(--color-border-default);
+  border-radius: var(--dimension-border-radius-component);
+}
+.m-legend__toggle {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--s2);
+  width: 100%; padding: 0; cursor: pointer;
+  border: 0; background: transparent; font-family: inherit;
+  text-transform: uppercase; color: var(--color-foreground-subtle);
+}
+.m-legend__icon { font-size: 1.6rem; }
+.m-legend__toggle[aria-expanded="true"]  .m-legend__icon--more { display: none; }
+.m-legend__toggle[aria-expanded="false"] .m-legend__icon--less { display: none; }
+.m-legend__body { padding-top: var(--s3); }
+.m-legend__body[hidden] { display: none; }
+.m-legend__row {
+  display: flex; align-items: center; gap: var(--s2);
+  margin: 0 0 var(--s2); color: var(--color-foreground-default);
+}
+.m-legend__key { flex: none; }
+.m-legend__caption {
+  margin: var(--s3) 0 var(--s2); padding-top: var(--s3);
+  border-top: var(--border-width-thin) solid var(--color-border-default);
+  color: var(--color-foreground-subtle);
+}
+.m-legend__scale { display: flex; gap: .2rem; }
+.m-legend__step { flex: 1; height: 1rem; border-radius: var(--dimension-border-radius-button-xs); }
+.m-legend__step--t3 { background: var(--color-map-tier-3); }
+.m-legend__step--t2 { background: var(--color-map-tier-2); }
+.m-legend__step--t1 { background: var(--color-map-tier-1); }
+.m-legend__step--t0 { background: var(--color-map-land); border: var(--border-width-thin) solid var(--color-border-default); }
+.m-legend__ends {
+  display: flex; justify-content: space-between; gap: var(--s4);
+  margin: var(--s1) 0 0; color: var(--color-foreground-subtle);
+}
+
+/* ---- panel ---- */
+.cms-map__panel {
+  display: flex; flex-direction: column; min-height: 0;
+  padding: var(--s5);
+  background: var(--color-background-solid-neutral-strong);
+  border: var(--border-width-thin) solid var(--color-border-default);
+  border-radius: var(--dimension-border-radius-card);
+}
+.cms-map__count { margin: 0; text-transform: uppercase; color: var(--color-foreground-subtle); }
+
+.cms-map__list {
+  flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
+  margin: 0; padding: 0; list-style: none;
+  border-top: var(--border-width-thin) solid var(--color-border-default);
+}
+
+/* ---- m-result (one headquarters row) ---- */
+.m-result {
+  display: block; width: 100%; text-align: left; cursor: pointer;
+  padding: var(--s3) var(--s2);
+  border: 0; border-bottom: var(--border-width-thin) solid var(--color-border-default);
+  background: transparent; color: inherit; font-family: inherit;
+  transition: background-color .14s;
+}
+.m-result:hover { background: var(--color-background-solid-neutral-subtle); }
+.m-result[aria-current="true"] { background: var(--color-accent-soft); }
+.m-result[aria-current="true"] .m-result__place { color: var(--color-foreground-emphasis); }
+.m-result[aria-current="true"] .m-result__abbr { color: var(--color-foreground-solid-accent-default); }
+.m-result__top { display: flex; align-items: baseline; gap: var(--s2); }
+.m-result__abbr {
+  flex: none; text-transform: uppercase;
+  color: var(--color-foreground-solid-accent-strong);
+}
+.m-result__place {
+  color: var(--color-foreground-default);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.m-result__name { display: block; margin-top: var(--s1); color: var(--color-foreground-subtle); }
+
+.cms-map__empty { padding: var(--s6) var(--s2); color: var(--color-foreground-subtle); }
+.cms-map__hint { margin: 0; color: var(--color-foreground-subtle); }
+
+/* ---- m-embed ---- */
+.m-embed {
+  position: absolute; right: var(--s4); top: var(--s8); z-index: 600;
+  width: 30rem; max-width: calc(100% - var(--s7));
+  padding: var(--s4);
+  background: var(--color-background-solid-neutral-strong);
+  border: var(--border-width-thin) solid var(--color-border-default);
+  border-radius: var(--dimension-border-radius-card);
+}
+.m-embed[hidden] { display: none; }
+.m-embed__head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--s3); margin-bottom: var(--s3);
+}
+.m-embed__title { margin: 0; text-transform: uppercase; color: var(--color-foreground-subtle); }
+.m-embed__close {
+  display: grid; place-items: center; width: 2.4rem; height: 2.4rem;
+  padding: 0; font-size: 1.6rem; cursor: pointer;
+  border: 0; background: transparent; color: var(--color-foreground-subtle);
+  border-radius: var(--dimension-border-radius-button-s);
+}
+.m-embed__close:hover {
+  color: var(--color-foreground-emphasis);
+  background: var(--color-background-dim-neutral-default);
+}
+.m-embed__label {
+  display: block; margin: var(--s3) 0 var(--s1);
+  color: var(--color-foreground-subtle);
+}
+.m-embed__select,
+.m-embed__code {
+  width: 100%; font-family: inherit;
+  padding: var(--s2) var(--s3);
+  color: var(--color-foreground-emphasis);
+  background: var(--color-background-solid-neutral-strong);
+  border: var(--border-width-thin) solid var(--color-border-default);
+  border-radius: var(--dimension-border-radius-button-s);
+}
+.m-embed__code {
+  margin-top: var(--s1);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 1.1rem; line-height: 1.45; resize: vertical;
+  color: var(--color-foreground-default);
+}
+.m-embed__check {
+  display: flex; align-items: center; gap: var(--s2);
+  margin-top: var(--s4); cursor: pointer;
+  color: var(--color-foreground-default);
+}
+.m-embed__check input {
+  width: 1.6rem; height: 1.6rem; margin: 0; flex: none;
+  accent-color: var(--color-foreground-solid-accent-default);
+}
+.m-embed__copy { width: 100%; margin-top: var(--s3); }
+.m-embed__note { margin: var(--s2) 0 0; color: var(--color-foreground-subtle); }
+
+/* ---- embed mode: the module is the whole document ---- */
+body.is-embed { background: transparent; }
+body.is-embed .cms-map { padding-block: 0; }
+body.is-embed .container { padding-inline: 0; max-width: 100%; }
+body.is-noheader .cms-map__header,
+body.is-noheader .cms-map__header + .h-s5 { display: none; }
+body.is-embed .cms-map__layout { height: 100dvh; min-height: 0; }
+body.is-embed .cms-map__canvas,
+body.is-embed .cms-map__panel { border-radius: var(--dimension-border-radius-module); }
+body.is-embed #embedBtn { display: none; }
+
+/* map-only embed (panel=0) */
+body.is-maponly .cms-map__layout { grid-template-columns: 1fr; }
+body.is-maponly .cms-map__panel { display: none; }
+
+/* =================================================================
+   Leaflet overrides — all colour via tokens, no shadows anywhere
+================================================================= */
+
+.leaflet-container {
+  font-family: var(--typography-font-families-font-1);
+  background: var(--color-map-water);
+}
+
+.leaflet-control-zoom { margin-bottom: var(--s6) !important; }
+.leaflet-control-zoom {
+  border: var(--border-width-thin) solid var(--color-border-default) !important;
+  border-radius: var(--dimension-border-radius-button-s) !important;
+  box-shadow: none !important;
+  overflow: hidden;
+}
+.leaflet-control-zoom a {
+  width: 3.2rem !important; height: 3.2rem !important; line-height: 3.1rem !important;
+  color: var(--color-foreground-default) !important;
+  background: var(--color-background-solid-neutral-strong) !important;
+  border-bottom-color: var(--color-border-default) !important;
+  font-size: 1.8rem !important;
+}
+.leaflet-control-zoom a:hover {
+  background: var(--color-background-solid-neutral-subtle) !important;
+  color: var(--color-foreground-emphasis) !important;
+}
+.leaflet-control-zoom a.leaflet-disabled {
+  color: var(--color-foreground-subtle) !important;
+  opacity: var(--color-opacity-disabled);
+}
+
+.leaflet-control-attribution {
+  background: var(--color-background-solid-neutral-strong) !important;
+  color: var(--color-foreground-subtle) !important;
+  font-size: 1rem !important;
+  border-top-left-radius: var(--dimension-border-radius-button-xs);
+}
+.leaflet-control-attribution a { color: var(--color-foreground-default) !important; }
+
+.leaflet-interactive:focus { outline: var(--border-width-medium) solid var(--color-focus); outline-offset: .1rem; }
+
+/* popup */
+.leaflet-popup-content-wrapper {
+  padding: 0;
+  background: var(--color-background-solid-neutral-strong);
+  color: var(--color-foreground-default);
+  border: var(--border-width-thin) solid var(--color-border-default);
+  border-radius: var(--dimension-border-radius-card);
+  box-shadow: none;
+}
+.leaflet-popup-content { margin: 0; width: 32rem !important; }
+.leaflet-popup-tip {
+  background: var(--color-background-solid-neutral-strong);
+  border: var(--border-width-thin) solid var(--color-border-default);
+  box-shadow: none;
+}
+.leaflet-popup-close-button {
+  color: var(--color-foreground-subtle) !important;
+  padding: var(--s2) var(--s2) 0 0 !important;
+}
+.leaflet-popup-close-button:hover { color: var(--color-foreground-emphasis) !important; }
+
+.m-popup { padding: var(--s4); }
+.m-popup__title { margin: 0; padding-right: var(--s5); color: var(--color-foreground-emphasis); }
+.m-popup__meta {
+  display: flex; align-items: center; flex-wrap: wrap;
+  gap: var(--s2); margin: var(--s3) 0 0;
+}
+.m-popup__place { color: var(--color-foreground-default); }
+.m-popup__desc {
+  margin: var(--s3) 0 0; padding-top: var(--s3);
+  border-top: var(--border-width-thin) solid var(--color-border-default);
+  color: var(--color-foreground-subtle);
+}
+.m-popup__cta { margin-top: var(--s4); }
+
+/* tooltip */
+.leaflet-tooltip.m-hint {
+  padding: var(--s1) var(--s2);
+  color: var(--color-foreground-emphasis);
+  background: var(--color-background-solid-neutral-strong);
+  border: var(--border-width-thin) solid var(--color-border-default);
+  border-radius: var(--dimension-border-radius-button-xs);
+  box-shadow: none;
+  font-family: var(--typography-font-families-font-1);
+  font-weight: 600; font-size: 1.2rem; line-height: 1.3;
+}
+.leaflet-tooltip.m-hint::before { display: none; }
+
+/* =================================================================
+   Responsive
+================================================================= */
+
+@media (max-width: 860px) {
+  .cms-map__layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: 46vh minmax(0, 1fr);
+    height: auto;
+    min-height: 0;
+  }
+  .cms-map__canvas { min-height: 32rem; }
+  .cms-map__panel { max-height: 60rem; }
+  .m-legend { min-width: 18rem; padding: var(--s2); }
+  .m-embed { left: var(--s4); right: var(--s4); width: auto; }
+  /* Embedding is a desktop authoring task; the button only crowds the map here. */
+  #embedBtn { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}

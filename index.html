@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="cgiar">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Where CGIAR Works</title>
+<meta name="description" content="Interactive map of CGIAR Center headquarter locations and the geographic coverage of the CGIAR 2025-2030 Research Portfolio.">
+
+<!-- Noto Sans / Noto Serif — the two families the design system specifies -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;600;700&amp;family=Noto+Serif:wght@300;400&amp;display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="vendor/leaflet.css?v=2">
+<link rel="stylesheet" href="assets/app.css?v=2">
+</head>
+
+<body data-area="light">
+
+<!-- Icon sprite, inlined from assets/icons.svg so the module needs no second
+     request and still works from the filesystem. Markup shape is unchanged:
+     <svg class="a-icon"><use href="#icon-name"></use></svg> -->
+<svg class="h-sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+<symbol id="icon-search" viewBox="0 0 24 24"><g fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.416 4.666A8.25 8.25 0 0 1 14.59 15.78l4.691 4.691a.75.75 0 1 1-1.06 1.06l-4.691-4.69A8.25 8.25 0 0 1 2.416 4.666ZM8.25 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5Z" fill="currentColor"/></g></symbol>
+<symbol id="icon-close" viewBox="0 0 24 24"><g fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M6.227 6.227a.75.75 0 0 1 1.061 0L12 10.94l4.713-4.712a.75.75 0 0 1 1.06 1.06L13.061 12l4.712 4.712a.75.75 0 0 1-1.06 1.061L12 13.061l-4.712 4.712a.75.75 0 0 1-1.06-1.06L10.94 12 6.227 7.288a.75.75 0 0 1 0-1.061Z" fill="currentColor"/></g></symbol>
+<symbol id="icon-reset" viewBox="0 0 24 24"><g fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 3.75a8.25 8.25 0 1 1-8.158 9.488.75.75 0 1 0-1.483.224C3.065 18.153 7.112 21.75 12 21.75c5.385 0 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25A9.75 9.75 0 0 0 3.062 8.1a.75.75 0 0 0 1.374.6A8.252 8.252 0 0 1 12 3.75Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M3 3.225a.675.675 0 0 0-.674.675v3.96c0 .671.544 1.215 1.215 1.215H7.5a.675.675 0 0 0 0-1.35H3.676V3.9A.675.675 0 0 0 3 3.225ZM9.47 9.47a.75.75 0 0 1 1.06 0L12 10.94l1.47-1.47a.75.75 0 1 1 1.06 1.06L13.06 12l1.47 1.47a.75.75 0 1 1-1.06 1.06L12 13.06l-1.47 1.47a.75.75 0 1 1-1.06-1.06L10.94 12l-1.47-1.47a.75.75 0 0 1 0-1.06Z" fill="currentColor"/></g></symbol>
+<symbol id="icon-external-link" viewBox="0 0 24 24"><g fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M9.772 6a.75.75 0 0 1 .75-.75h8.48a.75.75 0 0 1 .75.75v8.48a.75.75 0 1 1-1.5 0V7.81L6.532 19.53a.75.75 0 1 1-1.06-1.06l11.72-11.72h-6.67a.75.75 0 0 1-.75-.75Z" fill="currentColor"/></g></symbol>
+<symbol id="icon-less" viewBox="0 0 24 24"><g fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.25 12a.75.75 0 0 1 .75-.75h12a.75.75 0 0 1 0 1.5H6a.75.75 0 0 1-.75-.75Z" fill="currentColor"/></g></symbol>
+<symbol id="icon-more" viewBox="0 0 24 24"><g fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 5.25a.75.75 0 0 1 .75.75v5.25H18a.75.75 0 0 1 0 1.5h-5.25V18a.75.75 0 0 1-1.5 0v-5.25H6a.75.75 0 0 1 0-1.5h5.25V6a.75.75 0 0 1 .75-.75Z" fill="currentColor"/></g></symbol>
+<symbol id="icon-link" viewBox="0 0 24 24"><g fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.857 6C12.241 6 15 8.96 15 11.998a1 1 0 1 1-2 0C13 10.053 11.125 8 8.857 8H7.143C4.828 8 3 9.817 3 11.998c0 1.88 1.355 3.487 3.215 3.897.297.065.608.1.928.1a1 1 0 1 1 0 2c-.466 0-.92-.05-1.358-.147-2.72-.6-4.785-2.974-4.785-5.85C1 8.658 3.777 6 7.143 6h1.714Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M15.857 7a1 1 0 0 1 1-1c.466 0 .92.05 1.358.147 2.72.6 4.785 2.974 4.785 5.85 0 3.34-2.777 5.998-6.143 5.998h-1.714C11.759 17.995 9 15.036 9 11.998a1 1 0 1 1 2 0c0 1.945 1.875 3.997 4.143 3.997h1.714c2.315 0 4.143-1.816 4.143-3.997 0-1.88-1.355-3.487-3.215-3.898a4.304 4.304 0 0 0-.928-.1 1 1 0 0 1-1-1Z" fill="currentColor"/></g></symbol>
+<symbol id="icon-check" viewBox="0 0 24 24"><g fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M21.507 4.448a.75.75 0 0 1 .045 1.06l-12.857 14a.75.75 0 0 1-1.105 0l-5.142-5.6a.75.75 0 1 1 1.104-1.015l4.59 4.998L20.449 4.493a.75.75 0 0 1 1.06-.045Z" fill="currentColor"/></g></symbol>
+<symbol id="icon-globe" viewBox="0 0 40 40"><g fill="none"><g clip-path="url(#clip0_10320_8590)" stroke="currentColor" stroke-width="1.5"><path d="M20 39c10.493 0 19-8.507 19-19S30.493 1 20 1 1 9.507 1 20s8.507 19 19 19Z" stroke-linecap="round" stroke-linejoin="round"/><path d="m13.542 2 1.326 3.688a1 1 0 0 1 .016.63l-1.686 5.532a1 1 0 0 1-.876.705l-5.145.417a1 1 0 0 0-.604.267l-4.322 4.056c-.143.134-.25.307-.251.502-.001.776.564 2.155 2.91 3.203 2.187.977 5.583 2.02 7.545 2.645a.975.975 0 0 1 .57 1.376l-2.814 5.562a1 1 0 0 0-.026.847L12.583 37M33.204 6l-1.692 3.528a1 1 0 0 1-.743.555l-4.876.782a1 1 0 0 0-.841.987v2.742a1 1 0 0 0 1.328.944l2.828-.983a1 1 0 0 1 .329-.055h3.834a1 1 0 0 1 .57.179l3.36 2.335a1 1 0 0 1 .33 1.254l-1.236 2.58a1 1 0 0 1-1.031.558l-6.726-.876a1 1 0 0 0-.449.044l-6.447 2.176a1 1 0 0 0-.677 1.03l.378 4.534a1 1 0 0 0 .718.877l5.66 1.639a1 1 0 0 1 .703.772L29.368 36"/></g></g></symbol>
+</svg>
+
+<div class="cms-map container">
+
+  <header class="cms-map__header">
+    <h1 class="cms-map__title h-typo-headline-l">Where CGIAR works</h1>
+    <p class="cms-map__lead h-typo-copy-l">Center headquarter locations, and the geographic
+      coverage of the CGIAR 2025&ndash;2030 Research Portfolio.</p>
+  </header>
+
+  <div class="h-s5"></div>
+
+  <div class="cms-map__layout">
+
+    <!-- ---------------------------------------------------------------- map -->
+    <div class="cms-map__canvas" id="mapCanvas">
+
+      <div class="cms-map__toolbar">
+        <div class="cms-map__toolbar-group">
+        <span class="cms-map__region h-typo-tag" id="regionTag">17 headquarters</span>
+        <button class="a-button a-button--tertiary a-button--size-small h-typo-link-s" type="button" id="reset">
+          <span class="a-button__icon"><svg class="a-icon" aria-hidden="true"><use href="#icon-reset"></use></svg></span>
+          <span class="a-button__text">Reset view</span>
+        </button>
+        <button class="a-button a-button--tertiary a-button--size-small h-typo-link-s" type="button"
+                id="embedBtn" aria-expanded="false" aria-controls="embedPanel">
+          <span class="a-button__icon"><svg class="a-icon" aria-hidden="true"><use href="#icon-link"></use></svg></span>
+          <span class="a-button__text">Embed</span>
+        </button>
+        </div>
+      </div>
+
+      <div id="map" role="application"
+           aria-label="World map of CGIAR Center headquarters and research portfolio coverage"></div>
+
+      <div class="m-embed" id="embedPanel" hidden>
+        <div class="m-embed__head">
+          <p class="m-embed__title h-typo-tag">Embed this map</p>
+          <button class="m-embed__close" type="button" id="embedClose" aria-label="Close">
+            <svg class="a-icon" aria-hidden="true"><use href="#icon-close"></use></svg>
+          </button>
+        </div>
+
+        <label class="m-embed__label h-typo-copy-s" for="embedRegion">Region shown on load</label>
+        <select class="m-embed__select h-typo-copy-s" id="embedRegion"></select>
+
+        <label class="m-embed__check h-typo-copy-s" for="embedHeader">
+          <input type="checkbox" id="embedHeader">
+          <span>Include title and description</span>
+        </label>
+
+        <label class="m-embed__label h-typo-copy-s" for="embedCode">Paste into the page</label>
+        <textarea class="m-embed__code" id="embedCode" rows="4" readonly spellcheck="false"></textarea>
+
+        <button class="a-button a-button--primary a-button--size-small h-typo-link-s m-embed__copy"
+                type="button" id="embedCopy">
+          <span class="a-button__icon"><svg class="a-icon" aria-hidden="true"><use href="#icon-link"></use></svg></span>
+          <span class="a-button__text" id="embedCopyText">Copy embed code</span>
+        </button>
+        <p class="m-embed__note h-typo-caption">The region stays changeable by visitors after the map loads.</p>
+      </div>
+
+      <div class="m-legend" id="legend">
+        <button class="m-legend__toggle h-typo-tag" type="button" id="legendToggle"
+                aria-expanded="true" aria-controls="legendBody">
+          <span>Legend</span>
+          <svg class="a-icon m-legend__icon m-legend__icon--more" aria-hidden="true"><use href="#icon-more"></use></svg>
+          <svg class="a-icon m-legend__icon m-legend__icon--less" aria-hidden="true"><use href="#icon-less"></use></svg>
+        </button>
+        <div class="m-legend__body" id="legendBody">
+          <p class="m-legend__row h-typo-copy-s">
+            <span class="m-legend__key m-pin m-pin--sm"></span>Center headquarters</p>
+          <p class="m-legend__row h-typo-copy-s">
+            <span class="m-legend__key m-pin m-pin--sm m-pin--system"></span>System Organization</p>
+
+          <p class="m-legend__caption h-typo-caption">Portfolio coverage 2025&ndash;2030</p>
+          <div class="m-legend__scale" aria-hidden="true">
+            <span class="m-legend__step m-legend__step--t3"></span>
+            <span class="m-legend__step m-legend__step--t2"></span>
+            <span class="m-legend__step m-legend__step--t1"></span>
+            <span class="m-legend__step m-legend__step--t0"></span>
+          </div>
+          <p class="m-legend__ends h-typo-caption"><span>Highest</span><span>Not covered</span></p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- -------------------------------------------------------------- panel -->
+    <aside class="cms-map__panel">
+
+      <div class="m-search-field">
+        <label class="h-visually-hidden" for="search">Search centers by name, acronym, city or country</label>
+        <input type="search" class="m-search-field__input h-typo-copy-m" id="search"
+               placeholder="Search center or country" autocomplete="off" spellcheck="false">
+        <button class="m-search-field__btn m-search-field__btn--search" type="button" id="clear"
+                aria-label="Clear search" hidden>
+          <svg class="a-icon" aria-hidden="true"><use href="#icon-close"></use></svg>
+        </button>
+        <span class="m-search-field__btn m-search-field__btn--static" aria-hidden="true" id="searchIcon">
+          <svg class="a-icon"><use href="#icon-search"></use></svg>
+        </span>
+      </div>
+
+      <div class="h-s3"></div>
+
+      <div class="cms-search-filter" id="filters" role="group" aria-label="Filter by region"></div>
+
+      <p class="cms-map__count h-visually-hidden" id="count" role="status" aria-live="polite"></p>
+
+      <div class="h-s4"></div>
+
+      <ul class="cms-map__list" id="list" aria-label="Center headquarter locations"></ul>
+
+      <div class="h-s4"></div>
+
+      <p class="cms-map__hint h-typo-caption">
+        Shading approximates the portfolio-coverage heat map in the source graphic.
+        Read off the artwork &mdash; not an official CGIAR dataset.
+      </p>
+
+    </aside>
+
+  </div>
+</div>
+
+<script src="vendor/leaflet.js?v=2"></script>
+<script src="assets/projections.js?v=2"></script>
+<script src="assets/geo.js?v=2"></script>
+<script src="assets/data.js?v=2"></script>
+<script src="assets/app.js?v=2"></script>
+</body>
+</html>
