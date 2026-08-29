@@ -610,13 +610,21 @@ body {
 .m-embed__copy { width: 100%; margin-top: var(--s3); }
 .m-embed__note { margin: var(--s2) 0 0; color: var(--color-foreground-subtle); }
 
-/* ---- embed mode: the module is the whole document ---- */
+/* ---- embed mode: the module is the whole document ----
+   The host page's auto-height script reads this document's own
+   scrollHeight and applies it back to the very iframe this page is
+   rendering inside. Any vh/dvh unit here measures the iframe's CURRENT
+   size, not real content - reported straight back, it just confirms
+   whatever height the iframe already has and never actually changes.
+   (That was the previous rule here: height:100dvh, which is exactly
+   100% of the iframe's own allocated height - a no-op auto-height.)
+   Every height in embed mode is therefore a fixed, absolute value. */
 body.is-embed { background: transparent; }
 body.is-embed .cms-map { padding-block: 0; }
 body.is-embed .container { padding-inline: 0; max-width: 100%; }
 body.is-noheader .cms-map__header,
 body.is-noheader .cms-map__header + .h-s5 { display: none; }
-body.is-embed .cms-map__layout { height: 100dvh; min-height: 0; }
+body.is-embed .cms-map__layout { height: 48rem; min-height: 0; }
 body.is-embed .cms-map__canvas,
 body.is-embed .cms-map__panel { border-radius: var(--dimension-border-radius-module); }
 body.is-embed #embedBtn { display: none; }
@@ -728,6 +736,12 @@ body.is-maponly .cms-map__panel { display: none; }
   }
   .cms-map__canvas { min-height: 32rem; }
   .cms-map__panel { max-height: 60rem; }
+
+  /* Narrow embed: the 46vh map row above is fine for the standalone page
+     (a real browser viewport, not circular), but not here - same reason
+     as the desktop embed override, just at this breakpoint instead. */
+  body.is-embed .cms-map__layout { height: auto; grid-template-rows: 32rem minmax(0, 1fr); }
+
   .m-legend:has(#legendBody:not([hidden])) { min-width: 18rem; padding: var(--s2); }
 
   /* the five-row facet list gives way to the compact native select here */

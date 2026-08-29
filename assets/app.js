@@ -495,6 +495,7 @@
       li.className = 'cms-map__empty h-typo-copy-m';
       li.textContent = 'No headquarters match that search.';
       listEl.appendChild(li);
+      postHeight();
       return;
     }
 
@@ -523,6 +524,11 @@
       li.appendChild(btn);
       listEl.appendChild(li);
     });
+
+    // On mobile the panel's own height tracks the list (it's not purely
+    // viewport-relative there), so a search or filter that changes the
+    // number of rows can change the embedded page's total height too.
+    postHeight();
   }
 
   function hover(id, on) {
@@ -668,12 +674,27 @@
     return u.toString();
   }
 
+  // The page already posts { type: 'cgiar-map-height', height } to its
+  // parent on load and on resize (see postHeight() below) - but that
+  // message does nothing unless the host page is listening for it. The
+  // copied snippet has to include that listener, or "height: auto" is a
+  // promise the iframe never keeps and visitors get a fixed 640px box
+  // with the map's own scrollbar inside it.
   function syncEmbedCode() {
     embedRegion.value = REGION_TO_SLUG[state.region];
-    embedCode.value =
-      '<iframe src="' + embedURL() + '"\n' +
-      '        width="100%" height="640" loading="lazy"\n' +
-      '        style="border:0" title="Where CGIAR works"></iframe>';
+    embedCode.value = [
+      '<iframe id="cgiarMap" src="' + embedURL() + '"',
+      '        width="100%" height="640" loading="lazy"',
+      '        style="border:0; display:block" title="Where CGIAR works"></iframe>',
+      '<script>',
+      '  window.addEventListener(\'message\', function (e) {',
+      '    if (e.data && e.data.type === \'cgiar-map-height\' && typeof e.data.height === \'number\') {',
+      '      var f = document.getElementById(\'cgiarMap\');',
+      '      if (f) f.style.height = e.data.height + \'px\';',
+      '    }',
+      '  });',
+      '<' + '/script>'
+    ].join('\n');
   }
 
   embedHeader.addEventListener('change', function () {
@@ -712,9 +733,20 @@
   });
 
   // Let a host page size the iframe to the content, as map.html does.
+  //
+  // document.documentElement.scrollHeight is the wrong measurement here:
+  // <html> always reports at least as tall as the iframe's OWN currently
+  // allocated viewport, even when the real content is shorter - so once
+  // the parent has sized the iframe up, this can never report a smaller
+  // number to shrink it back down, no matter how much content actually
+  // changes. document.body.scrollHeight does not have that floor; it
+  // reflects the content's real height regardless of the iframe's
+  // current size (verified: content genuinely 629px tall inside a
+  // then-940px iframe read back 629 from body, still 940 from
+  // documentElement).
   function postHeight() {
     if (!CFG.embed || window.parent === window) return;
-    var h = document.documentElement.scrollHeight;
+    var h = document.body.scrollHeight;
     window.parent.postMessage({ type: 'cgiar-map-height', height: h }, '*');
   }
 

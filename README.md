@@ -104,16 +104,34 @@ The same keys can be set as `window.CGIAR_MAP_CONFIG` before `assets/app.js` loa
 
 **A pre-filtered region is only a starting view — visitors can still change it.**
 
-Example, for an Asia & Pacific landing page:
+Example, for an Asia & Pacific landing page — this is exactly what the **Embed**
+button's "Copy embed code" gives you, region and title toggle included:
 
 ```html
-<iframe src="https://cg-so.github.io/where-cgiar-works/?embed=1&region=asia-pacific"
+<iframe id="cgiarMap" src="https://cg-so.github.io/where-cgiar-works/?embed=1&region=asia-pacific"
         width="100%" height="640" loading="lazy"
-        style="border:0" title="Where CGIAR works"></iframe>
+        style="border:0; display:block" title="Where CGIAR works"></iframe>
+<script>
+  window.addEventListener('message', function (e) {
+    if (e.data && e.data.type === 'cgiar-map-height' && typeof e.data.height === 'number') {
+      var f = document.getElementById('cgiarMap');
+      if (f) f.style.height = e.data.height + 'px';
+    }
+  });
+</script>
 ```
 
-In `embed=1` the page posts `{ type: 'cgiar-map-height', height }` to the parent
-on load and resize, so a host page can size the iframe to its content.
+**The `height="640"` on the iframe is only a starting size**, shown before the
+`<script>` gets a chance to run. In `embed=1` the page posts
+`{ type: 'cgiar-map-height', height }` to its parent on load, on resize, and
+whenever a search or filter changes how much content the panel holds — the
+snippet's `<script>` listens for that and sets the iframe's real height to
+match, so it always fits its content instead of showing extra empty space or
+its own internal scrollbar.
+
+If your CMS strips inline `<script>` tags, the auto-height won't work — drop
+the script and pick a fixed height that fits, e.g. `height="720"`. The map is
+still fully usable, it just won't resize itself.
 
 ## Design system
 
