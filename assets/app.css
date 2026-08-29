@@ -413,19 +413,25 @@ body {
 .m-pin--marker:hover, .m-pin--marker.state-m-pin--active { transform: scale(1.25); }
 .m-pin--marker.state-m-pin--active { background: var(--color-foreground-solid-accent-strong); }
 
-/* ---- m-legend ---- */
+/* ---- m-legend ----
+   Collapsed, this is just the toggle button itself - it reuses Reset
+   view's exact a-button classes so the two sit at identical size, not a
+   bespoke box that has to be hand-tuned to match. .m-legend is purely a
+   position anchor here; it only becomes a visible card, and the toggle
+   only stops looking like a button, once the body is actually showing. */
 .m-legend {
   position: absolute; left: var(--s4); bottom: var(--s4); z-index: 500;
+}
+.m-legend:has(#legendBody:not([hidden])) {
   min-width: 20rem; padding: var(--s3);
   background: var(--color-background-solid-neutral-strong);
   border: var(--border-width-thin) solid var(--color-border-default);
   border-radius: var(--dimension-border-radius-component);
 }
-.m-legend__toggle {
-  display: flex; align-items: center; justify-content: space-between; gap: var(--s2);
-  width: 100%; padding: 0; cursor: pointer;
-  border: 0; background: transparent; font-family: inherit;
-  text-transform: uppercase; color: var(--color-foreground-subtle);
+.m-legend__toggle { text-transform: uppercase; }
+.m-legend:has(#legendBody:not([hidden])) .m-legend__toggle {
+  width: 100%; justify-content: space-between;
+  padding: 0; background: transparent; border-color: transparent;
 }
 .m-legend__icon { font-size: 1.6rem; }
 .m-legend__toggle[aria-expanded="true"]  .m-legend__icon--more { display: none; }
@@ -669,7 +675,7 @@ body.is-maponly .cms-map__panel { display: none; }
   }
   .cms-map__canvas { min-height: 32rem; }
   .cms-map__panel { max-height: 60rem; }
-  .m-legend { min-width: 18rem; padding: var(--s2); }
+  .m-legend:has(#legendBody:not([hidden])) { min-width: 18rem; padding: var(--s2); }
   .m-embed { left: var(--s4); right: var(--s4); width: auto; }
   /* Embedding is a desktop authoring task; the button only crowds the map here. */
   #embedBtn { display: none; }
