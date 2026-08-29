@@ -380,6 +380,7 @@ body {
 .cms-map__toolbar > * { pointer-events: auto; }
 .cms-map__toolbar-group { display: flex; align-items: center; gap: var(--s2); flex-wrap: wrap; }
 .cms-map__region {
+  display: inline-flex; align-items: center;
   background: var(--color-background-solid-neutral-strong);
   border: var(--border-width-thin) solid var(--color-border-default);
   border-radius: var(--dimension-border-radius-button-s);
@@ -677,6 +678,7 @@ body.is-maponly .cms-map__panel { display: none; }
      controls were sized for a mouse cursor and land well under it ---- */
   .cms-search-filter-link { min-height: 4.4rem; }
   .cms-map__toolbar .a-button--size-small { min-height: 4.4rem; }
+  .cms-map__region { min-height: 4.4rem; }
   .leaflet-control-zoom a { width: 4.4rem !important; height: 4.4rem !important; line-height: 4.3rem !important; }
   .m-legend__toggle { min-height: 4.4rem; }
   .leaflet-popup-close-button {
