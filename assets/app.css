@@ -269,7 +269,39 @@ body {
 }
 .m-search-field__btn[hidden] { display: none; }
 
-/* ---- cms-search-filter: mutually exclusive region facets ----
+/* ---- m-region-select: native <select> variant, mobile only ----
+   A five-row facet list is the right call with room to spare (desktop), but
+   on a phone it is a lot of vertical space spent on one filter before any
+   actual result is visible. A native select collapses the same choice into
+   one control the platform already knows how to present well, and it's the
+   pattern visitors expect for "pick one of a short list" on a touchscreen.
+   Both variants stay wired to the same state; only display differs by
+   breakpoint (see the responsive block). */
+.m-region-select {
+  position: relative;
+  display: none;   /* shown on mobile only */
+}
+.m-region-select__input {
+  width: 100%;
+  appearance: none;
+  padding: var(--s3) var(--s7) var(--s3) var(--s4);
+  color: var(--color-foreground-emphasis);
+  background: var(--color-background-solid-neutral-strong);
+  border: var(--border-width-thin) solid var(--color-border-default);
+  border-radius: var(--dimension-border-radius-component);
+  font-family: inherit;
+}
+.m-region-select__input:focus {
+  outline: var(--border-width-medium) solid var(--color-focus);
+  outline-offset: .2rem;
+}
+.m-region-select__chevron {
+  position: absolute; top: 50%; right: var(--s4); transform: translateY(-50%);
+  font-size: 1.6rem; color: var(--color-foreground-subtle);
+  pointer-events: none;
+}
+
+/* ---- cms-search-filter: mutually exclusive region facets, desktop ----
    Five long region names will not sit on one row, and wrapped pills read as
    an accident. A facet list gives each region its full name and its count. */
 .cms-search-filter {
@@ -371,6 +403,21 @@ body {
 }
 #map { position: absolute; inset: 0; z-index: 1; background: var(--color-map-water); outline: none; }
 
+/* Shown in place of the map if data/centers.json fails to load or parse -
+   a bad edit to that file should be visible and legible, not a blank box. */
+.cms-map__error {
+  position: absolute; inset: var(--s4); z-index: 2;
+  display: flex; flex-direction: column; justify-content: center; gap: var(--s2);
+  padding: var(--s6);
+  background: var(--color-background-solid-neutral-strong);
+  border: var(--border-width-thin) solid var(--color-border-default);
+  border-radius: var(--dimension-border-radius-card);
+  text-align: center;
+}
+.cms-map__error p { margin: 0; }
+.cms-map__error .h-typo-headline-xs { color: var(--color-foreground-emphasis); }
+.cms-map__error .h-typo-copy-s { color: var(--color-foreground-subtle); }
+
 /* toolbar */
 .cms-map__toolbar {
   position: absolute; top: var(--s4); left: var(--s4); right: var(--s4); z-index: 500;
@@ -467,6 +514,12 @@ body {
   border: var(--border-width-thin) solid var(--color-border-default);
   border-radius: var(--dimension-border-radius-card);
 }
+/* Only the result list is meant to shrink/scroll when content outgrows the
+   panel; everything else (search, filter, spacers) should hold its size.
+   Flex items default to shrinkable, so without this every child gets
+   proportionally squashed instead - the search-to-filter gap collapsing to
+   a few px under a slightly taller filter section was that happening. */
+.cms-map__panel > * { flex-shrink: 0; }
 .cms-map__count { margin: 0; text-transform: uppercase; color: var(--color-foreground-subtle); }
 
 .cms-map__list {
@@ -676,6 +729,10 @@ body.is-maponly .cms-map__panel { display: none; }
   .cms-map__canvas { min-height: 32rem; }
   .cms-map__panel { max-height: 60rem; }
   .m-legend:has(#legendBody:not([hidden])) { min-width: 18rem; padding: var(--s2); }
+
+  /* the five-row facet list gives way to the compact native select here */
+  .m-region-select { display: block; }
+  .cms-search-filter { display: none; }
   .m-embed { left: var(--s4); right: var(--s4); width: auto; }
   /* Embedding is a desktop authoring task; the button only crowds the map here. */
   #embedBtn { display: none; }
@@ -683,6 +740,7 @@ body.is-maponly .cms-map__panel { display: none; }
   /* ---- touch targets: 44px is the floor on a touch surface, several
      controls were sized for a mouse cursor and land well under it ---- */
   .cms-search-filter-link { min-height: 4.4rem; }
+  .m-region-select__input { min-height: 4.4rem; }
   .cms-map__toolbar .a-button--size-small { min-height: 4.4rem; }
   .cms-map__region { min-height: 4.4rem; }
   .leaflet-control-zoom a { width: 4.4rem !important; height: 4.4rem !important; line-height: 4.3rem !important; }

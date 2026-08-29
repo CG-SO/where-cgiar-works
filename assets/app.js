@@ -13,14 +13,53 @@
      ?header=0 / ?header=1  hide or show the title and description
                             (shown by default, hidden by default in an embed)
      ?panel=0               map only, no side panel
+     ?data=path/to.json     which content file to load (default below)
    The same keys can be set as window.CGIAR_MAP_CONFIG before this script.
    Whatever the defaults, every control stays live for the visitor.
+
+   Content — Center headquarters, page title/subtitle — lives in
+   data/centers.json, not in this file, matching the sibling apac-map
+   project's pattern: one editable JSON file, no code changes to update it.
+   See that file's own comment, or the README, for its exact shape.
 ================================================================= */
 
-(function () {
+(async function () {
   'use strict';
 
-  var CENTERS = window.CENTERS;
+  var DATA_URL = new URLSearchParams(window.location.search).get('data')
+    || (window.CGIAR_MAP_CONFIG && window.CGIAR_MAP_CONFIG.data)
+    || 'data/centers.json';
+
+  var content = null;
+  try {
+    var res = await fetch(DATA_URL, { cache: 'no-cache' });
+    if (res.ok) content = await res.json();
+  } catch (err) { /* content stays null; handled below */ }
+
+  if (!content || !Array.isArray(content.centers) || !content.centers.length) {
+    var canvas = document.getElementById('mapCanvas');
+    canvas.innerHTML =
+      '<div class="cms-map__error">' +
+        '<p class="h-typo-headline-xs">Couldn’t load the map content</p>' +
+        '<p class="h-typo-copy-s">' + esc(DATA_URL) +
+          ' didn’t return a usable center list. Check the file is valid JSON ' +
+          'and reachable at that path.</p>' +
+      '</div>';
+    return;
+  }
+
+  var HEADER = content.header || {};
+  if (HEADER.title) {
+    document.title = HEADER.title;
+    var h1 = document.querySelector('.cms-map__title');
+    if (h1) h1.textContent = HEADER.title;
+  }
+  if (HEADER.subtitle) {
+    var lede = document.querySelector('.cms-map__lead');
+    if (lede) lede.textContent = HEADER.subtitle;
+  }
+
+  var CENTERS = content.centers;
   var FOOTPRINT = window.FOOTPRINT;
   var COUNTRY_REGION = window.COUNTRY_REGION;
   var WORLD = window.WORLD_GEO;
@@ -344,6 +383,7 @@
   var searchEl = document.getElementById('search');
   var clearEl = document.getElementById('clear');
   var filtersEl = document.getElementById('filters');
+  var regionSelectEl = document.getElementById('regionSelect');
   var regionTag = document.getElementById('regionTag');
 
   var present = CENTERS.map(function (c) { return c.region; });
@@ -353,7 +393,11 @@
 
   var state = { q: '', region: CFG.region, active: null };
 
+  /* Two controls filter by region — a facet list on desktop, a native
+     <select> on mobile, both wired to the same selectRegion() so whichever
+     is visible at a given breakpoint is always the one that's current. */
   var facetCounts = {};
+  var selectOptions = {};
 
   REGIONS.forEach(function (r) {
     var b = document.createElement('button');
@@ -371,6 +415,16 @@
     b.addEventListener('click', function () { selectRegion(r, true); });
     filtersEl.appendChild(b);
     facetCounts[r] = b.querySelector('.cms-search-filter-link__count');
+
+    var o = document.createElement('option');
+    o.value = r;
+    o.selected = r === state.region;
+    regionSelectEl.appendChild(o);
+    selectOptions[r] = o;
+  });
+
+  regionSelectEl.addEventListener('change', function () {
+    selectRegion(regionSelectEl.value, true);
   });
 
   /* Facet counts answer "what would I get", so they respond to the search
@@ -383,6 +437,8 @@
       facetCounts[r].textContent = n;
       filtersEl.querySelector('[data-region="' + cssEsc(r) + '"]')
         .classList.toggle('cms-search-filter-link--empty', n === 0);
+      selectOptions[r].textContent = (r === ALL ? 'All regions' : r) + ' (' + n + ')';
+      selectOptions[r].disabled = n === 0 && r !== state.region;
     });
   }
 
@@ -393,6 +449,7 @@
     Array.prototype.forEach.call(filtersEl.children, function (el) {
       el.setAttribute('aria-pressed', String(el.dataset.region === region));
     });
+    regionSelectEl.value = region;
     render();
     map.closePopup();
     if (fly) map.fitBounds(regionBounds(region), { padding: [16, 16], animate: true, duration: 0.7 });

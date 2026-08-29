@@ -11,8 +11,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;600;700&amp;family=Noto+Serif:wght@300;400&amp;display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="vendor/leaflet.css?v=9">
-<link rel="stylesheet" href="assets/app.css?v=9">
+<link rel="stylesheet" href="vendor/leaflet.css?v=12">
+<link rel="stylesheet" href="assets/app.css?v=12">
 </head>
 
 <body data-area="light">
@@ -21,6 +21,7 @@
      request and still works from the filesystem. Markup shape is unchanged:
      <svg class="a-icon"><use href="#icon-name"></use></svg> -->
 <svg class="h-sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+<symbol id="icon-arrow-down" viewBox="0 0 24 24"><g fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.47 8.47a.75.75 0 0 1 1.06 0L12 13.94l5.47-5.47a.75.75 0 1 1 1.06 1.06l-6 6a.75.75 0 0 1-1.06 0l-6-6a.75.75 0 0 1 0-1.06Z" fill="currentColor"/></g></symbol>
 <symbol id="icon-search" viewBox="0 0 24 24"><g fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.416 4.666A8.25 8.25 0 0 1 14.59 15.78l4.691 4.691a.75.75 0 1 1-1.06 1.06l-4.691-4.69A8.25 8.25 0 0 1 2.416 4.666ZM8.25 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5Z" fill="currentColor"/></g></symbol>
 <symbol id="icon-close" viewBox="0 0 24 24"><g fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M6.227 6.227a.75.75 0 0 1 1.061 0L12 10.94l4.713-4.712a.75.75 0 0 1 1.06 1.06L13.061 12l4.712 4.712a.75.75 0 0 1-1.06 1.061L12 13.061l-4.712 4.712a.75.75 0 0 1-1.06-1.06L10.94 12 6.227 7.288a.75.75 0 0 1 0-1.061Z" fill="currentColor"/></g></symbol>
 <symbol id="icon-reset" viewBox="0 0 24 24"><g fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 3.75a8.25 8.25 0 1 1-8.158 9.488.75.75 0 1 0-1.483.224C3.065 18.153 7.112 21.75 12 21.75c5.385 0 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25A9.75 9.75 0 0 0 3.062 8.1a.75.75 0 0 0 1.374.6A8.252 8.252 0 0 1 12 3.75Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M3 3.225a.675.675 0 0 0-.674.675v3.96c0 .671.544 1.215 1.215 1.215H7.5a.675.675 0 0 0 0-1.35H3.676V3.9A.675.675 0 0 0 3 3.225ZM9.47 9.47a.75.75 0 0 1 1.06 0L12 10.94l1.47-1.47a.75.75 0 1 1 1.06 1.06L13.06 12l1.47 1.47a.75.75 0 1 1-1.06 1.06L12 13.06l-1.47 1.47a.75.75 0 1 1-1.06-1.06L10.94 12l-1.47-1.47a.75.75 0 0 1 0-1.06Z" fill="currentColor"/></g></symbol>
@@ -134,7 +135,13 @@
         </span>
       </div>
 
-      <div class="h-s3"></div>
+      <div class="h-s5"></div>
+
+      <div class="m-region-select">
+        <label class="h-visually-hidden" for="regionSelect">Filter by region</label>
+        <select class="m-region-select__input h-typo-copy-s" id="regionSelect"></select>
+        <svg class="a-icon m-region-select__chevron" aria-hidden="true"><use href="#icon-arrow-down"></use></svg>
+      </div>
 
       <div class="cms-search-filter" id="filters" role="group" aria-label="Filter by region"></div>
 
@@ -156,10 +163,10 @@
   </div>
 </div>
 
-<script src="vendor/leaflet.js?v=9"></script>
-<script src="assets/projections.js?v=9"></script>
-<script src="assets/geo.js?v=9"></script>
-<script src="assets/data.js?v=9"></script>
-<script src="assets/app.js?v=9"></script>
+<script src="vendor/leaflet.js?v=12"></script>
+<script src="assets/projections.js?v=12"></script>
+<script src="assets/geo.js?v=12"></script>
+<script src="assets/data.js?v=12"></script>
+<script src="assets/app.js?v=12"></script>
 </body>
 </html>
