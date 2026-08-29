@@ -237,7 +237,17 @@
       alt: c.abbr + ' headquarters, ' + c.city + ', ' + c.country
     });
 
-    m.bindPopup(popupHTML(c), { closeButton: true, autoPanPadding: [40, 40], maxWidth: 320 });
+    // A uniform 40px autoPanPadding isn't enough on mobile: the fixed
+    // toolbar (region tag + Reset view) eats ~60-65px off the top there,
+    // so a popup opened near the top edge slid in underneath it with its
+    // close button unreachable. Give the top real clearance; keep the
+    // other edges modest.
+    m.bindPopup(popupHTML(c), {
+      closeButton: true,
+      autoPanPaddingTopLeft: [16, 76],
+      autoPanPaddingBottomRight: [16, 16],
+      maxWidth: 320
+    });
     m.bindTooltip(c.abbr + ' &middot; ' + c.city, {
       className: 'm-hint', direction: 'top', offset: [0, -12], opacity: 1
     });
