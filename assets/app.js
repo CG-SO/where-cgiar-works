@@ -270,28 +270,66 @@
      every popup regardless of how it was opened - a direct pin tap included,
      which never goes through focusCenter(). */
   map.on('popupopen', function (e) {
-    setTimeout(function () {
-      var el = e.popup._container;
+    var popup = e.popup;
+    var tries = 0;
+    var settled = 0;
+    var vv = window.visualViewport;
+
+    // A single fixed-delay check gambles on exactly when the page finishes
+    // settling, and that moment isn't fixed - it varies with webfont load
+    // time and, on iOS Safari specifically, with the address bar/toolbar
+    // chrome animating its own show/hide around the interaction (which can
+    // happen well after any reasonable one-shot delay). Keep re-checking
+    // the popup's actual rendered position against the toolbar on a timer,
+    // AND react directly to visualViewport resizing - the event iOS fires
+    // exactly when its chrome finishes changing size - rather than betting
+    // everything on guessed intervals.
+    function check() {
+      var el = popup._container;
+      if (!el || !document.body.contains(el)) { stopWatchingViewport(); return; }
+
       var toolbar = document.querySelector('.cms-map__toolbar');
-      if (!el || !toolbar) return;
+      var canvas = document.getElementById('mapCanvas');
+      if (toolbar && canvas) {
+        var pop = el.getBoundingClientRect();
+        var bar = toolbar.getBoundingClientRect();
+        var box = canvas.getBoundingClientRect();
+        var margin = 8;
 
-      var pop = el.getBoundingClientRect();
-      var bar = toolbar.getBoundingClientRect();
-      var canvas = document.getElementById('mapCanvas').getBoundingClientRect();
-      var margin = 8;
+        var dy = 0;
+        var minTop = bar.bottom + margin;
+        if (pop.top < minTop) dy = minTop - pop.top;
 
-      var dy = 0;
-      var minTop = bar.bottom + margin;
-      if (pop.top < minTop) dy = minTop - pop.top;
+        // don't push it off the bottom of a short canvas correcting the top
+        var maxBottom = box.bottom - margin;
+        if (dy && (pop.bottom + dy) > maxBottom) {
+          dy = Math.max(0, maxBottom - pop.bottom);
+        }
 
-      // don't push it off the bottom of a short canvas correcting the top
-      var maxBottom = canvas.bottom - margin;
-      if (dy && (pop.bottom + dy) > maxBottom) {
-        dy = Math.max(0, maxBottom - pop.bottom);
+        if (dy > 0.5) {
+          settled = 0;
+          map.panBy([0, -dy], { animate: true, duration: 0.2 });
+        } else {
+          settled++;
+        }
       }
 
-      if (dy > 0) map.panBy([0, -dy], { animate: true, duration: 0.2 });
-    }, 350);
+      tries++;
+      if (tries < 10 && settled < 2) setTimeout(check, 200);
+      else stopWatchingViewport();
+    }
+
+    function onViewportChange() { settled = 0; check(); }
+
+    function stopWatchingViewport() {
+      if (vv) vv.removeEventListener('resize', onViewportChange);
+      popup.off('remove', stopWatchingViewport);
+    }
+
+    if (vv) vv.addEventListener('resize', onViewportChange);
+    popup.on('remove', stopWatchingViewport);
+
+    setTimeout(check, 150);
   });
 
   function pinEl(id) {
