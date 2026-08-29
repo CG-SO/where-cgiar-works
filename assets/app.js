@@ -258,6 +258,42 @@
     markerLayer.addLayer(m);
   });
 
+  /* Leaflet's own autoPan (above) computes its target from the container's
+     measured size at the moment the popup opens. On iOS Safari that size can
+     be stale: the address bar/toolbar chrome shows or hides asynchronously
+     around a fresh navigation or a tap, changing the visible viewport height
+     after Leaflet already did its math - a popup that autoPan judged clear
+     of the fixed page toolbar can still end up sliding in underneath it.
+     Rather than chase a bigger padding number (unreliable, since the actual
+     miscalculation varies), check the SETTLED, rendered position against the
+     toolbar directly, and nudge the map if it still overlaps. This runs for
+     every popup regardless of how it was opened - a direct pin tap included,
+     which never goes through focusCenter(). */
+  map.on('popupopen', function (e) {
+    setTimeout(function () {
+      var el = e.popup._container;
+      var toolbar = document.querySelector('.cms-map__toolbar');
+      if (!el || !toolbar) return;
+
+      var pop = el.getBoundingClientRect();
+      var bar = toolbar.getBoundingClientRect();
+      var canvas = document.getElementById('mapCanvas').getBoundingClientRect();
+      var margin = 8;
+
+      var dy = 0;
+      var minTop = bar.bottom + margin;
+      if (pop.top < minTop) dy = minTop - pop.top;
+
+      // don't push it off the bottom of a short canvas correcting the top
+      var maxBottom = canvas.bottom - margin;
+      if (dy && (pop.bottom + dy) > maxBottom) {
+        dy = Math.max(0, maxBottom - pop.bottom);
+      }
+
+      if (dy > 0) map.panBy([0, -dy], { animate: true, duration: 0.2 });
+    }, 350);
+  });
+
   function pinEl(id) {
     var m = markers[id];
     return m && m._icon ? m._icon : null;
