@@ -672,6 +672,29 @@ body.is-maponly .cms-map__panel { display: none; }
   .m-embed { left: var(--s4); right: var(--s4); width: auto; }
   /* Embedding is a desktop authoring task; the button only crowds the map here. */
   #embedBtn { display: none; }
+
+  /* ---- touch targets: 44px is the floor on a touch surface, several
+     controls were sized for a mouse cursor and land well under it ---- */
+  .cms-search-filter-link { min-height: 4.4rem; }
+  .cms-map__toolbar .a-button--size-small { min-height: 4.4rem; }
+  .leaflet-control-zoom a { width: 4.4rem !important; height: 4.4rem !important; line-height: 4.3rem !important; }
+  .m-legend__toggle { min-height: 4.4rem; }
+  .leaflet-popup-close-button {
+    width: 3.6rem !important; height: 3.6rem !important;
+    padding: 0 !important; display: flex !important;
+    align-items: center; justify-content: center;
+  }
+
+  /* iOS Safari zooms the page on focusing any input under 16px; the type
+     scale's mobile step for this field is 14px. */
+  .m-search-field__input { font-size: 1.6rem; }
+  /* the clear (×) button is a fixed 28px box regardless of padding */
+  .m-search-field__btn--search { width: 3.6rem; height: 3.6rem; }
+
+  /* A popup sized for a desktop panel (32rem) sits almost flush with a
+     phone's edges. `width: auto` shrink-wraps instead of filling the space
+     available, so give it a real target width capped to the viewport. */
+  .leaflet-popup-content { width: min(30rem, calc(100vw - 7.2rem)) !important; }
 }
 
 @media (prefers-reduced-motion: reduce) {

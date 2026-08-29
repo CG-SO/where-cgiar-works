@@ -311,7 +311,7 @@
     });
     render();
     map.closePopup();
-    if (fly) map.flyToBounds(regionBounds(region), { padding: [16, 16], duration: 0.7 });
+    if (fly) map.fitBounds(regionBounds(region), { padding: [16, 16], animate: true, duration: 0.7 });
     syncEmbedCode();
   }
 
@@ -407,8 +407,8 @@
     if (!c || !m) return;
     if (!markerLayer.hasLayer(m)) markerLayer.addLayer(m);
 
-    // flyTo emits no moveend when the view is already at the target, so the
-    // popup needs a fallback or re-selecting the same row would open nothing.
+    // setView emits no moveend when the view is already at the target, so
+    // the popup needs a fallback or re-selecting the same row would open nothing.
     var opened = false;
     function open() {
       if (opened) return;
@@ -416,7 +416,7 @@
       m.openPopup();
     }
 
-    map.flyTo([c.lat, c.lon], Math.max(map.getZoom(), 5), { duration: 0.7 });
+    map.setView([c.lat, c.lon], Math.max(map.getZoom(), 5), { animate: true, duration: 0.7 });
     map.once('moveend', open);
     setTimeout(open, 900);
 
@@ -477,7 +477,7 @@
   document.getElementById('reset').addEventListener('click', function () {
     map.closePopup();
     setActive(null, false);
-    map.flyToBounds(regionBounds(state.region), { padding: [16, 16], duration: 0.6 });
+    map.fitBounds(regionBounds(state.region), { padding: [16, 16], animate: true, duration: 0.6 });
   });
 
   var legendToggle = document.getElementById('legendToggle');
