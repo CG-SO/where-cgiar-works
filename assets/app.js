@@ -148,15 +148,17 @@
     zoomDelta: 0.5,
     wheelPxPerZoomLevel: 120,
     zoomControl: false,
-    // Latitude bounds are deliberately far wider than the real world.
-    // maxBounds exists here only to stop runaway panning, but at the
-    // world-fit zoom one screen-pixel is worth a LOT of latitude (measured:
-    // a 100px pan swings the centre by ~45deg), so tight +-89 bounds meant
-    // any popup autoPan immediately overshot them and Leaflet's bounds
-    // spring-back silently undid the correction - which is what kept
-    // dragging popups back underneath the toolbar. Wide bounds still
-    // prevent runaway panning while leaving autoPan room to work.
-    maxBounds: [[-150, -185], [150, 185]],
+    // Deliberately far wider than the real world, on BOTH axes. maxBounds
+    // exists here only to stop runaway panning, but at the world-fit zoom
+    // one screen pixel is worth a lot of degrees (measured: a 100px pan
+    // swings the centre ~45deg), so realistic bounds left Leaflet's popup
+    // autoPan no room: it overshot them and the bounds spring-back quietly
+    // undid the correction. Tight latitude did that vertically (popups
+    // dragged back under the toolbar); +-185 longitude did the same
+    // horizontally for the Asia/Pacific pins, pushing popups and their
+    // close buttons off the right edge. Wide bounds still prevent runaway
+    // panning while leaving autoPan room to actually work.
+    maxBounds: [[-250, -400], [250, 400]],
     maxBoundsViscosity: 0.7
   });
 
