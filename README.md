@@ -80,7 +80,7 @@ them by right-clicking a spot in Google Maps and copying the two numbers.
 
 - 17 headquarter locations (15 Centers; ILRI and the Alliance each have two offices)
 - Search by Center, acronym, city or country
-- Filter by region, with live result counts
+- Filter by region via a dropdown, with live result counts on each option
 - Selecting a region drops every country outside it back to the base map colour,
   so the shading reads as that region's coverage alone
 - Click a pin or a result row for the Center's focus and website

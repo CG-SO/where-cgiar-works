@@ -269,18 +269,14 @@ body {
 }
 .m-search-field__btn[hidden] { display: none; }
 
-/* ---- m-region-select: native <select> variant, mobile only ----
-   A five-row facet list is the right call with room to spare (desktop), but
-   on a phone it is a lot of vertical space spent on one filter before any
-   actual result is visible. A native select collapses the same choice into
-   one control the platform already knows how to present well, and it's the
-   pattern visitors expect for "pick one of a short list" on a touchscreen.
-   Both variants stay wired to the same state; only display differs by
-   breakpoint (see the responsive block). */
-.m-region-select {
-  position: relative;
-  display: none;   /* shown on mobile only */
-}
+/* ---- m-region-select: the region filter, all breakpoints ----
+   One native <select> rather than a five-row facet list. It collapses the
+   choice into a single control the platform already knows how to present,
+   keeps the panel short enough that actual results are visible without
+   scrolling, and is the pattern visitors expect for "pick one of a short
+   list". Option labels carry their result counts, so the information the
+   facet list showed is not lost. */
+.m-region-select { position: relative; }
 .m-region-select__input {
   width: 100%;
   appearance: none;
@@ -301,47 +297,6 @@ body {
   pointer-events: none;
 }
 
-/* ---- cms-search-filter: mutually exclusive region facets, desktop ----
-   Five long region names will not sit on one row, and wrapped pills read as
-   an accident. A facet list gives each region its full name and its count. */
-.cms-search-filter {
-  display: flex; flex-direction: column;
-  border-top: var(--border-width-thin) solid var(--color-border-default);
-}
-.cms-search-filter-link {
-  display: flex; align-items: center; justify-content: space-between; gap: var(--s3);
-  width: 100%; padding: var(--s2) var(--s1);
-  font-family: inherit; text-align: left; cursor: pointer;
-  color: var(--color-foreground-default);
-  background: transparent;
-  border: 0;
-  border-bottom: var(--border-width-thin) solid var(--color-border-default);
-  transition: color .14s, background-color .14s;
-}
-.cms-search-filter-link:hover {
-  color: var(--color-foreground-emphasis);
-  background: var(--color-background-solid-neutral-subtle);
-}
-.cms-search-filter-link[aria-pressed="true"] {
-  color: var(--color-foreground-solid-accent-strong);
-}
-.cms-search-filter-link__label { display: flex; align-items: center; gap: var(--s2); }
-.cms-search-filter-link__mark {
-  width: 1.4rem; height: 1.4rem; font-size: 1.4rem; flex: none;
-  color: var(--color-foreground-solid-accent-default);
-  opacity: 0;
-}
-.cms-search-filter-link[aria-pressed="true"] .cms-search-filter-link__mark { opacity: 1; }
-.cms-search-filter-link__count {
-  flex: none;
-  font-variant-numeric: tabular-nums;
-  color: var(--color-foreground-subtle);
-}
-.cms-search-filter-link[aria-pressed="true"] .cms-search-filter-link__count,
-.cms-search-filter-link:hover .cms-search-filter-link__count {
-  color: inherit;
-}
-.cms-search-filter-link--empty { opacity: var(--color-opacity-disabled); }
 
 /* ---- browser surfaces ----
    Selection, caret, scrollbars and numerals ship with browser defaults that
@@ -372,8 +327,7 @@ body {
 
 /* Counts and coordinates line up only with tabular figures. */
 .cms-map__count,
-.cms-map__region,
-.cms-search-filter-link__count { font-variant-numeric: tabular-nums; }
+.cms-map__region { font-variant-numeric: tabular-nums; }
 
 /* =================================================================
    cms-map — the map module
@@ -744,16 +698,41 @@ body.is-maponly .cms-map__panel { display: none; }
 
   .m-legend:has(#legendBody:not([hidden])) { min-width: 18rem; padding: var(--s2); }
 
-  /* the five-row facet list gives way to the compact native select here */
-  .m-region-select { display: block; }
-  .cms-search-filter { display: none; }
+  /* ---- popups vs the toolbar: solved structurally ----
+     On desktop the toolbar floats over the map, which is fine there. On a
+     phone the map is short enough that a popup opening near the top slid
+     underneath it, with its close button unreachable.
+
+     Every attempt to correct that positionally failed, because they all
+     came down to panning the map: at the world-fit zoom one screen pixel
+     is worth ~0.45deg of latitude, so any corrective pan overshot
+     maxBounds and Leaflet's spring-back quietly undid it (measured the
+     popup clearing at t=0.7s and being dragged back under by t=2.7s), and
+     merely insetting the map still left it settling a few pixels short.
+
+     So: stop overlapping. Here the canvas becomes a flex column, the
+     toolbar takes a real row of its own, and the map fills what is left.
+     The toolbar is no longer over the map, and .leaflet-container clips
+     its own overlays, so a popup CANNOT render across it no matter where
+     autoPan leaves it. No magic numbers to keep re-tuning. */
+  .cms-map__canvas { display: flex; flex-direction: column; }
+  .cms-map__toolbar {
+    position: static;
+    padding: var(--s3) var(--s3) 0;
+    pointer-events: auto;
+  }
+  #map { position: relative; inset: auto; flex: 1 1 auto; min-height: 0; }
+
+  /* Cap the popup so unusually long content scrolls inside the card rather
+     than filling the whole of a short map. */
+  .leaflet-popup-content { max-height: 18rem; overflow-y: auto; }
+
   .m-embed { left: var(--s4); right: var(--s4); width: auto; }
   /* Embedding is a desktop authoring task; the button only crowds the map here. */
   #embedBtn { display: none; }
 
   /* ---- touch targets: 44px is the floor on a touch surface, several
      controls were sized for a mouse cursor and land well under it ---- */
-  .cms-search-filter-link { min-height: 4.4rem; }
   .m-region-select__input { min-height: 4.4rem; }
   .cms-map__toolbar .a-button--size-small { min-height: 4.4rem; }
   .cms-map__region { min-height: 4.4rem; }

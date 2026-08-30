@@ -148,7 +148,15 @@
     zoomDelta: 0.5,
     wheelPxPerZoomLevel: 120,
     zoomControl: false,
-    maxBounds: [[-89, -185], [89, 185]],
+    // Latitude bounds are deliberately far wider than the real world.
+    // maxBounds exists here only to stop runaway panning, but at the
+    // world-fit zoom one screen-pixel is worth a LOT of latitude (measured:
+    // a 100px pan swings the centre by ~45deg), so tight +-89 bounds meant
+    // any popup autoPan immediately overshot them and Leaflet's bounds
+    // spring-back silently undid the correction - which is what kept
+    // dragging popups back underneath the toolbar. Wide bounds still
+    // prevent runaway panning while leaving autoPan room to work.
+    maxBounds: [[-150, -185], [150, 185]],
     maxBoundsViscosity: 0.7
   });
 
@@ -276,15 +284,14 @@
       alt: c.abbr + ' headquarters, ' + c.city + ', ' + c.country
     });
 
-    // A uniform 40px autoPanPadding isn't enough on mobile: the fixed
-    // toolbar (region tag + Reset view) eats ~60-65px off the top there,
-    // so a popup opened near the top edge slid in underneath it with its
-    // close button unreachable. Give the top real clearance; keep the
-    // other edges modest.
+    // Symmetric padding is correct now: on narrow screens the Leaflet
+    // viewport is inset below the floating toolbar in CSS, so the toolbar
+    // is outside the map's coordinate space and autoPan only has to keep
+    // the popup inside the map itself. No extra top allowance needed, and
+    // no oversized value to push the pan outside maxBounds.
     m.bindPopup(popupHTML(c), {
       closeButton: true,
-      autoPanPaddingTopLeft: [16, 76],
-      autoPanPaddingBottomRight: [16, 16],
+      autoPanPadding: [16, 16],
       maxWidth: 320
     });
     m.bindTooltip(c.abbr + ' &middot; ' + c.city, {
@@ -297,80 +304,17 @@
     markerLayer.addLayer(m);
   });
 
-  /* Leaflet's own autoPan (above) computes its target from the container's
-     measured size at the moment the popup opens. On iOS Safari that size can
-     be stale: the address bar/toolbar chrome shows or hides asynchronously
-     around a fresh navigation or a tap, changing the visible viewport height
-     after Leaflet already did its math - a popup that autoPan judged clear
-     of the fixed page toolbar can still end up sliding in underneath it.
-     Rather than chase a bigger padding number (unreliable, since the actual
-     miscalculation varies), check the SETTLED, rendered position against the
-     toolbar directly, and nudge the map if it still overlaps. This runs for
-     every popup regardless of how it was opened - a direct pin tap included,
-     which never goes through focusCenter(). */
-  map.on('popupopen', function (e) {
-    var popup = e.popup;
-    var tries = 0;
-    var settled = 0;
-    var vv = window.visualViewport;
-
-    // A single fixed-delay check gambles on exactly when the page finishes
-    // settling, and that moment isn't fixed - it varies with webfont load
-    // time and, on iOS Safari specifically, with the address bar/toolbar
-    // chrome animating its own show/hide around the interaction (which can
-    // happen well after any reasonable one-shot delay). Keep re-checking
-    // the popup's actual rendered position against the toolbar on a timer,
-    // AND react directly to visualViewport resizing - the event iOS fires
-    // exactly when its chrome finishes changing size - rather than betting
-    // everything on guessed intervals.
-    function check() {
-      var el = popup._container;
-      if (!el || !document.body.contains(el)) { stopWatchingViewport(); return; }
-
-      var toolbar = document.querySelector('.cms-map__toolbar');
-      var canvas = document.getElementById('mapCanvas');
-      if (toolbar && canvas) {
-        var pop = el.getBoundingClientRect();
-        var bar = toolbar.getBoundingClientRect();
-        var box = canvas.getBoundingClientRect();
-        var margin = 8;
-
-        var dy = 0;
-        var minTop = bar.bottom + margin;
-        if (pop.top < minTop) dy = minTop - pop.top;
-
-        // don't push it off the bottom of a short canvas correcting the top
-        var maxBottom = box.bottom - margin;
-        if (dy && (pop.bottom + dy) > maxBottom) {
-          dy = Math.max(0, maxBottom - pop.bottom);
-        }
-
-        if (dy > 0.5) {
-          settled = 0;
-          map.panBy([0, -dy], { animate: true, duration: 0.2 });
-        } else {
-          settled++;
-        }
-      }
-
-      tries++;
-      if (tries < 10 && settled < 2) setTimeout(check, 200);
-      else stopWatchingViewport();
-    }
-
-    function onViewportChange() { settled = 0; check(); }
-
-    function stopWatchingViewport() {
-      if (vv) vv.removeEventListener('resize', onViewportChange);
-      popup.off('remove', stopWatchingViewport);
-    }
-
-    if (vv) vv.addEventListener('resize', onViewportChange);
-    popup.on('remove', stopWatchingViewport);
-
-    setTimeout(check, 150);
-  });
-
+  /* No JS repositioning of popups here, deliberately. An earlier version
+     watched the popup's rendered position and panned the map when it
+     overlapped the floating toolbar. That fights Leaflet rather than
+     working with it: at the world-fit zoom the corrective pan pushes the
+     view outside maxBounds, and Leaflet's bounds spring-back quietly
+     undoes it a beat later (measured: cleared at t=0.7s, dragged back
+     under the toolbar by t=2.7s - which is exactly the bug it was meant
+     to fix, just delayed). The overlap is prevented in CSS instead, by
+     insetting the Leaflet viewport below the toolbar on narrow screens,
+     so the toolbar is not part of the map's coordinate space at all and
+     Leaflet's own autoPan has nothing to collide with. */
   function pinEl(id) {
     var m = markers[id];
     return m && m._icon ? m._icon : null;
@@ -382,7 +326,6 @@
   var countEl = document.getElementById('count');
   var searchEl = document.getElementById('search');
   var clearEl = document.getElementById('clear');
-  var filtersEl = document.getElementById('filters');
   var regionSelectEl = document.getElementById('regionSelect');
   var regionTag = document.getElementById('regionTag');
 
@@ -396,26 +339,9 @@
   /* Two controls filter by region — a facet list on desktop, a native
      <select> on mobile, both wired to the same selectRegion() so whichever
      is visible at a given breakpoint is always the one that's current. */
-  var facetCounts = {};
   var selectOptions = {};
 
   REGIONS.forEach(function (r) {
-    var b = document.createElement('button');
-    b.type = 'button';
-    b.className = 'cms-search-filter-link';
-    b.dataset.region = r;
-    b.setAttribute('aria-pressed', String(r === state.region));
-    b.innerHTML =
-      '<span class="cms-search-filter-link__label h-typo-copy-s">' +
-        '<svg class="a-icon cms-search-filter-link__mark" aria-hidden="true">' +
-          '<use href="#icon-check"></use></svg>' +
-        esc(r === ALL ? 'All regions' : r) +
-      '</span>' +
-      '<span class="cms-search-filter-link__count h-typo-copy-s"></span>';
-    b.addEventListener('click', function () { selectRegion(r, true); });
-    filtersEl.appendChild(b);
-    facetCounts[r] = b.querySelector('.cms-search-filter-link__count');
-
     var o = document.createElement('option');
     o.value = r;
     o.selected = r === state.region;
@@ -434,21 +360,15 @@
       var n = CENTERS.filter(function (c) {
         return (r === ALL || c.region === r) && matchesQuery(c);
       }).length;
-      facetCounts[r].textContent = n;
-      filtersEl.querySelector('[data-region="' + cssEsc(r) + '"]')
-        .classList.toggle('cms-search-filter-link--empty', n === 0);
       selectOptions[r].textContent = (r === ALL ? 'All regions' : r) + ' (' + n + ')';
+      // never disable the option that is currently selected, or the select
+      // would have no valid value to display
       selectOptions[r].disabled = n === 0 && r !== state.region;
     });
   }
 
-  function cssEsc(v) { return v.replace(/"/g, '\\"'); }
-
   function selectRegion(region, fly) {
     state.region = region;
-    Array.prototype.forEach.call(filtersEl.children, function (el) {
-      el.setAttribute('aria-pressed', String(el.dataset.region === region));
-    });
     regionSelectEl.value = region;
     render();
     map.closePopup();
