@@ -573,7 +573,10 @@ body {
    (That was the previous rule here: height:100dvh, which is exactly
    100% of the iframe's own allocated height - a no-op auto-height.)
    Every height in embed mode is therefore a fixed, absolute value. */
-body.is-embed { background: transparent; }
+/* flow-root stops the title's top margin collapsing through <body>: collapsed,
+   it pushed the body down 8px without counting in its height, so the
+   reported height fell 8px short and the iframe grew a scrollbar. */
+body.is-embed { background: transparent; display: flow-root; }
 body.is-embed .cms-map { padding-block: 0; }
 body.is-embed .container { padding-inline: 0; max-width: 100%; }
 body.is-noheader .cms-map__header,

@@ -668,7 +668,9 @@
   // documentElement).
   function postHeight() {
     if (!CFG.embed || window.parent === window) return;
-    var h = document.body.scrollHeight;
+    // Bottom edge of <body> in document coordinates, rounded UP: scrollHeight
+    // truncates fractional pixels, and a 0.5px shortfall is still a scrollbar.
+    var h = Math.ceil(document.body.getBoundingClientRect().bottom + window.scrollY);
     window.parent.postMessage({ type: 'cgiar-map-height', height: h }, '*');
   }
 
