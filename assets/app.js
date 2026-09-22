@@ -253,6 +253,13 @@
 
   /* -- headquarters pins --------------------------------------------------- */
 
+  /* City, country, plus the optional office label ("Headquarters",
+     "Principal Office") for Centers that list more than one office. */
+  function placeText(c) {
+    return esc(c.city) + ', ' + esc(c.country) +
+      (c.office ? ' &middot; ' + esc(c.office) : '');
+  }
+
   function popupHTML(c) {
     var host = c.url.replace(/^https?:\/\//, '');
     return '<div class="m-popup">' +
@@ -260,7 +267,7 @@
       '<p class="m-popup__meta">' +
         '<span class="a-tag h-typo-tag">' + esc(c.abbr) + '</span>' +
         '<span class="m-popup__place h-typo-copy-s">' +
-          esc(c.city) + ', ' + esc(c.country) + '</span>' +
+          placeText(c) + '</span>' +
       '</p>' +
       '<p class="m-popup__desc h-typo-copy-s">' + esc(c.focus) + '</p>' +
       '<a class="a-link h-typo-link-s m-popup__cta" href="' + esc(c.url) + '" ' +
@@ -283,7 +290,7 @@
         iconAnchor: [9, 9]
       }),
       keyboard: true,
-      alt: c.abbr + ' headquarters, ' + c.city + ', ' + c.country
+      alt: c.abbr + ' ' + (c.office || 'headquarters').toLowerCase() + ', ' + c.city + ', ' + c.country
     });
 
     // Symmetric padding is correct now: on narrow screens the Leaflet
@@ -405,9 +412,9 @@
     paintCountries();
     updateFacets();
 
-    countEl.textContent = visible.length + ' of ' + CENTERS.length + ' headquarters';
+    countEl.textContent = visible.length + ' of ' + CENTERS.length + ' locations';
     regionTag.textContent = state.region === ALL
-      ? CENTERS.length + ' headquarters'
+      ? CENTERS.length + ' locations'
       : state.region;
 
     listEl.textContent = '';
@@ -415,7 +422,7 @@
     if (!visible.length) {
       var li = document.createElement('li');
       li.className = 'cms-map__empty h-typo-copy-m';
-      li.textContent = 'No headquarters match that search.';
+      li.textContent = 'No locations match that search.';
       listEl.appendChild(li);
       postHeight();
       return;
@@ -432,7 +439,7 @@
         '<span class="m-result__top">' +
           '<span class="m-result__abbr h-typo-tag">' + esc(c.abbr) + '</span>' +
           '<span class="m-result__place h-typo-copy-s">' +
-            esc(c.city) + ', ' + esc(c.country) +
+            placeText(c) +
           '</span>' +
         '</span>' +
         '<span class="m-result__name h-typo-copy-s">' + esc(c.name) + '</span>';
@@ -607,7 +614,7 @@
     embedCode.value = [
       '<iframe id="cgiarMap" src="' + embedURL() + '"',
       '        width="100%" height="640" loading="lazy"',
-      '        style="border:0; display:block" title="Where CGIAR works"></iframe>',
+      '        style="border:0; display:block" title="Our global presence"></iframe>',
       '<script>',
       '  window.addEventListener(\'message\', function (e) {',
       '    if (e.data && e.data.type === \'cgiar-map-height\' && typeof e.data.height === \'number\') {',

@@ -501,7 +501,9 @@ body {
 }
 .m-result__place {
   color: var(--color-foreground-default);
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  /* Wraps rather than truncating: an office label ("Principal Office") is
+     information, and an ellipsis was cutting it off in the narrow panel. */
+  min-width: 0;
 }
 .m-result__name { display: block; margin-top: var(--s1); color: var(--color-foreground-subtle); }
 

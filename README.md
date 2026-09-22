@@ -43,7 +43,7 @@ in quick succession can queue competing deploys.)*
 ```jsonc
 {
   "header": {                        // optional — omit to keep the page's current title
-    "title":    "Where CGIAR works", // also becomes the browser tab title
+    "title":    "Our global presence", // also becomes the browser tab title
     "subtitle": "Short intro line under the title."
   },
 
@@ -56,6 +56,10 @@ in quick succession can queue competing deploys.)*
       "country":"Philippines",       // REQUIRED — must match a name the map recognises;
                                      // if shading looks wrong after adding a country the
                                      // map hasn't seen before, that's the thing to check
+      "office": "Headquarters",      // optional — only for Centers with more than one
+                                     // office, e.g. ILRI: "Headquarters" (Nairobi) and
+                                     // "Principal Office" (Addis Ababa). Shown after the
+                                     // city in the popup and the list; omit otherwise
       "region": "Asia & the Pacific",// REQUIRED — one of the four values below
       "lat":    14.1699,             // REQUIRED — latitude
       "lon":    121.2441,            // REQUIRED — longitude
@@ -78,7 +82,8 @@ them by right-clicking a spot in Google Maps and copying the two numbers.
 
 ## What it does
 
-- 17 headquarter locations (15 Centers; ILRI and the Alliance each have two offices)
+- 17 locations across 15 Centers (ILRI has a headquarters in Nairobi and a principal
+  office in Addis Ababa; the Alliance has offices in Rome and Cali)
 - Search by Center, acronym, city or country
 - Filter by region via a dropdown, with live result counts on each option
 - Selecting a region drops every country outside it back to the base map colour,
@@ -110,7 +115,7 @@ button's "Copy embed code" gives you, region and title toggle included:
 ```html
 <iframe id="cgiarMap" src="https://cg-so.github.io/where-cgiar-works/?embed=1&region=asia-pacific"
         width="100%" height="640" loading="lazy"
-        style="border:0; display:block" title="Where CGIAR works"></iframe>
+        style="border:0; display:block" title="Our global presence"></iframe>
 <script>
   window.addEventListener('message', function (e) {
     if (e.data && e.data.type === 'cgiar-map-height' && typeof e.data.height === 'number') {

@@ -1,6 +1,6 @@
 {
   "header": {
-    "title": "Where CGIAR works",
+    "title": "Our global presence",
     "subtitle": "Center headquarter locations, and the geographic coverage of the CGIAR 2025–2030 Research Portfolio."
   },
   "centers": [
@@ -135,27 +135,29 @@
       "hq": false
     },
     {
-      "id": "ilri-addis",
-      "name": "International Livestock Research Institute",
-      "abbr": "ILRI",
-      "city": "Addis Ababa",
-      "country": "Ethiopia",
-      "region": "Africa",
-      "lat": 9.032,
-      "lon": 38.7469,
-      "url": "https://www.ilri.org",
-      "focus": "Livestock research for better lives through livestock.",
-      "hq": false
-    },
-    {
       "id": "ilri-nairobi",
       "name": "International Livestock Research Institute",
       "abbr": "ILRI",
       "city": "Nairobi",
       "country": "Kenya",
+      "office": "Headquarters",
       "region": "Africa",
       "lat": -1.2921,
       "lon": 36.8219,
+      "url": "https://www.ilri.org",
+      "focus": "Livestock research for better lives through livestock.",
+      "hq": false
+    },
+    {
+      "id": "ilri-addis",
+      "name": "International Livestock Research Institute",
+      "abbr": "ILRI",
+      "city": "Addis Ababa",
+      "country": "Ethiopia",
+      "office": "Principal Office",
+      "region": "Africa",
+      "lat": 9.032,
+      "lon": 38.7469,
       "url": "https://www.ilri.org",
       "focus": "Livestock research for better lives through livestock.",
       "hq": false
@@ -200,9 +202,9 @@
       "hq": false
     },
     {
-      "id": "cifor",
-      "name": "Center for International Forestry Research",
-      "abbr": "CIFOR",
+      "id": "landscape-alliance",
+      "name": "Landscape Alliance",
+      "abbr": "Landscape Alliance",
       "city": "Bogor",
       "country": "Indonesia",
       "region": "Asia & the Pacific",
