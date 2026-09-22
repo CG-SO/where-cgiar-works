@@ -399,6 +399,42 @@
     return matchesQuery(c);
   }
 
+  /* Pins closer together on screen than one pin's width are fanned out
+     side by side around their shared centre, so none is hidden under
+     another. ILRI and the Landscape Alliance (ICRAF) are ~2km apart in
+     Nairobi and land on the SAME pixel at the world view. Offsets are in
+     screen pixels and recomputed on every zoom, so zooming in returns each
+     pin to its true position as soon as they stop colliding. The CSS
+     'translate' property is used because it composes with the transform
+     Leaflet already sets for positioning. The popup and tooltip get the
+     same offset so they point at the drawn pin, not the hidden spot. */
+  var PIN_STEP = 20; // 18px pin + 2px gap
+  function spreadPins() {
+    var pts = CENTERS.filter(function (c) { return markerLayer.hasLayer(markers[c.id]); })
+      .map(function (c) { return { c: c, p: map.latLngToLayerPoint([c.lat, c.lon]) }; });
+    var groups = [];
+    pts.forEach(function (pt) {
+      var g = groups.filter(function (gr) {
+        return gr.some(function (o) { return o.p.distanceTo(pt.p) < PIN_STEP; });
+      })[0];
+      if (g) g.push(pt); else groups.push([pt]);
+    });
+    groups.forEach(function (g) {
+      g.sort(function (a, b) { return a.c.lon - b.c.lon; });
+      var mx = 0, my = 0;
+      g.forEach(function (o) { mx += o.p.x / g.length; my += o.p.y / g.length; });
+      g.forEach(function (o, i) {
+        var dx = g.length > 1 ? Math.round(mx + (i - (g.length - 1) / 2) * PIN_STEP - o.p.x) : 0;
+        var dy = g.length > 1 ? Math.round(my - o.p.y) : 0;
+        var m = markers[o.c.id], el = m.getElement();
+        if (el) el.style.translate = (dx || dy) ? dx + 'px ' + dy + 'px' : '';
+        m.getPopup().options.offset = L.point(dx, 7 + dy);    // 7 = Leaflet's default
+        m.getTooltip().options.offset = L.point(dx, -12 + dy);
+      });
+    });
+  }
+  map.on('zoomend', spreadPins);
+
   function render() {
     var visible = CENTERS.filter(matches);
     var ids = {};
@@ -410,6 +446,7 @@
       if (ids[c.id] && !on) markerLayer.addLayer(m);
       else if (!ids[c.id] && on) markerLayer.removeLayer(m);
     });
+    spreadPins();
 
     paintCountries();
     updateFacets();
@@ -488,7 +525,7 @@
   function focusCenter(id) {
     var c = byId(id), m = markers[id];
     if (!c || !m) return;
-    if (!markerLayer.hasLayer(m)) markerLayer.addLayer(m);
+    if (!markerLayer.hasLayer(m)) { markerLayer.addLayer(m); spreadPins(); }
 
     // setView emits no moveend when the view is already at the target, so
     // the popup needs a fallback or re-selecting the same row would open nothing.
