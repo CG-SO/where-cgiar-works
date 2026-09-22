@@ -290,7 +290,7 @@
         iconAnchor: [9, 9]
       }),
       keyboard: true,
-      alt: c.abbr + ' ' + (c.office || 'headquarters').toLowerCase() + ', ' + c.city + ', ' + c.country
+      alt: c.abbr + ' ' + (c.office || 'headquarters') + ', ' + c.city + ', ' + c.country
     });
 
     // Symmetric padding is correct now: on narrow screens the Leaflet
