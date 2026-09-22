@@ -387,7 +387,9 @@
 
   function matchesQuery(c) {
     if (!state.q) return true;
-    var hay = (c.abbr + ' ' + c.name + ' ' + c.city + ' ' + c.country + ' ' + c.region)
+    // aliases: former or alternative names (e.g. "CIFOR"), searchable but not shown.
+    var hay = (c.abbr + ' ' + c.name + ' ' + c.city + ' ' + c.country + ' ' + c.region +
+      ' ' + (Array.isArray(c.aliases) ? c.aliases.join(' ') : ''))
       .toLowerCase();
     return state.q.split(/\s+/).every(function (t) { return hay.indexOf(t) !== -1; });
   }

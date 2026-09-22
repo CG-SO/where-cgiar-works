@@ -163,15 +163,20 @@
       "hq": false
     },
     {
-      "id": "icraf",
-      "name": "World Agroforestry",
-      "abbr": "ICRAF",
+      "id": "landscape-alliance-nairobi",
+      "name": "Landscape Alliance",
+      "abbr": "Landscape Alliance",
+      "aliases": [
+        "ICRAF",
+        "World Agroforestry",
+        "CIFOR-ICRAF"
+      ],
       "city": "Nairobi",
       "country": "Kenya",
       "region": "Africa",
       "lat": -1.3031,
       "lon": 36.806,
-      "url": "https://www.cifor-icraf.org",
+      "url": "https://landscapealliance.org",
       "focus": "Trees on farms, land restoration and agroforestry systems.",
       "hq": false
     },
@@ -202,15 +207,20 @@
       "hq": false
     },
     {
-      "id": "landscape-alliance",
+      "id": "landscape-alliance-bogor",
       "name": "Landscape Alliance",
       "abbr": "Landscape Alliance",
+      "aliases": [
+        "CIFOR",
+        "Center for International Forestry Research",
+        "CIFOR-ICRAF"
+      ],
       "city": "Bogor",
       "country": "Indonesia",
       "region": "Asia & the Pacific",
       "lat": -6.5971,
       "lon": 106.806,
-      "url": "https://www.cifor-icraf.org",
+      "url": "https://landscapealliance.org",
       "focus": "Forests, landscapes and the people who depend on them.",
       "hq": false
     },

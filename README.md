@@ -52,6 +52,8 @@ in quick succession can queue competing deploys.)*
       "id":     "irri",              // REQUIRED, unique — lowercase, no spaces
       "name":   "International Rice Research Institute",   // REQUIRED — full name, shown in the popup
       "abbr":   "IRRI",              // REQUIRED — short form, shown as the tag and in the list
+      "aliases": ["Old name"],       // optional — former or alternative names; searchable,
+                                     // never shown (e.g. Landscape Alliance keeps "CIFOR")
       "city":   "Los Baños",         // REQUIRED
       "country":"Philippines",       // REQUIRED — must match a name the map recognises;
                                      // if shading looks wrong after adding a country the
@@ -82,8 +84,9 @@ them by right-clicking a spot in Google Maps and copying the two numbers.
 
 ## What it does
 
-- 17 locations across 15 Centers (ILRI has a headquarters in Nairobi and a principal
-  office in Addis Ababa; the Alliance has offices in Rome and Cali)
+- 17 locations. Three organisations have two each: ILRI (headquarters in Nairobi,
+  principal office in Addis Ababa), the Alliance of Bioversity and CIAT (Rome and
+  Cali) and the Landscape Alliance (Nairobi and Bogor, formerly ICRAF and CIFOR)
 - Search by Center, acronym, city or country
 - Filter by region via a dropdown, with live result counts on each option
 - Selecting a region drops every country outside it back to the base map colour,
