@@ -437,14 +437,19 @@
       btn.className = 'm-result';
       btn.dataset.id = c.id;
       btn.setAttribute('aria-current', String(state.active === c.id));
+      // Three stacked lines sharing one left edge, so a long place name wraps
+      // cleanly instead of hanging under itself beside the acronym.
       btn.innerHTML =
-        '<span class="m-result__top">' +
-          '<span class="m-result__abbr h-typo-tag">' + esc(c.abbr) + '</span>' +
-          '<span class="m-result__place h-typo-copy-s">' +
-            placeText(c) +
-          '</span>' +
+        '<span class="m-result__abbr h-typo-tag">' + esc(c.abbr) + '</span>' +
+        '<span class="m-result__place h-typo-copy-s">' +
+          esc(c.city) + ', ' + esc(c.country) +
+          // Inline, so a long label wraps as ordinary text.
+          (c.office ? ' <span class="m-result__office">&middot; ' + esc(c.office) + '</span>' : '') +
         '</span>' +
-        '<span class="m-result__name h-typo-copy-s">' + esc(c.name) + '</span>';
+        // Skip the full name when it just repeats the acronym (Landscape Alliance).
+        (c.name !== c.abbr
+          ? '<span class="m-result__name h-typo-copy-s">' + esc(c.name) + '</span>'
+          : '');
 
       btn.addEventListener('click', function () { focusCenter(c.id); });
       btn.addEventListener('mouseenter', function () { hover(c.id, true); });

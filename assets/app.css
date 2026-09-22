@@ -494,18 +494,13 @@ body {
 .m-result[aria-current="true"] { background: var(--color-accent-soft); }
 .m-result[aria-current="true"] .m-result__place { color: var(--color-foreground-emphasis); }
 .m-result[aria-current="true"] .m-result__abbr { color: var(--color-foreground-solid-accent-default); }
-.m-result__top { display: flex; align-items: baseline; gap: var(--s2); }
 .m-result__abbr {
-  flex: none; text-transform: uppercase;
-  color: var(--color-foreground-solid-accent-strong);
+  display: block; margin-bottom: var(--s1);
+  text-transform: uppercase; color: var(--color-foreground-solid-accent-strong);
 }
-.m-result__place {
-  color: var(--color-foreground-default);
-  /* Wraps rather than truncating: an office label ("Principal Office") is
-     information, and an ellipsis was cutting it off in the narrow panel. */
-  min-width: 0;
-}
-.m-result__name { display: block; margin-top: var(--s1); color: var(--color-foreground-subtle); }
+.m-result__office { font-weight: 400; color: var(--color-foreground-subtle); }
+.m-result__place { display: block; font-weight: 600; color: var(--color-foreground-default); }
+.m-result__name { display: block; margin-top: .2rem; color: var(--color-foreground-subtle); }
 
 .cms-map__empty { padding: var(--s6) var(--s2); color: var(--color-foreground-subtle); }
 .cms-map__hint { margin: 0; color: var(--color-foreground-subtle); }
